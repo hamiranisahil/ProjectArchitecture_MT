@@ -27,7 +27,7 @@ class RecyclerViewAdapter(
     override fun getItemViewType(position: Int): Int {
         return if (onViewTypeListener != null) onViewTypeListener!!.getItemViewType(position) else position
     }
-
+    
     override fun getItemCount(): Int {
         return list.size
     }
