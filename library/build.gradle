@@ -1,8 +1,10 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.hamiranisahil'
+version='0.0.2'
 
 android {
     compileSdkVersion 28
