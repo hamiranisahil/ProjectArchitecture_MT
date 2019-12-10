@@ -16,6 +16,7 @@ import com.example.library.dialog.CustomDialog
 import com.example.library.modals.CommonRes
 import com.example.library.modals.MultipartModal
 import com.example.library.util.*
+import com.google.android.gms.common.internal.service.Common
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.dialog_for_api.*
@@ -160,7 +161,8 @@ class ApiCall {
             var progressView: View? = null
             var frameLayout: FrameLayout? = null
             if (LOADING_DIALOG_SHOW) {
-                progressView = LayoutInflater.from(context).inflate(R.layout.loading_api_progress, null)
+                progressView =
+                    LayoutInflater.from(context).inflate(R.layout.loading_api_progress, null)
                 progressView.tvLoading.text = LOADING_TITLE
 
                 rootView =
@@ -185,11 +187,13 @@ class ApiCall {
                             )
                             printLog("ApiCall - Request", "ParamsBody: $jsonString")
 
+
                             when (response.code()) {
                                 STATUS_200 -> {
 
                                     var bodyString = ""
                                     var responseBody: ResponseBody? = null
+
 
                                     if (webServiceType == WebServiceType.WS_FILE_DOWNLOAD || webServiceType == WebServiceType.WS_FILE_DOWNLOAD_WITH_MESSAGE) {
                                         responseBody = response.body()
@@ -240,22 +244,27 @@ class ApiCall {
                                         context,
                                         rootView!!,
                                         bodyString,
-                                        commonRes,
+                                        commonRes!!,
                                         requestCode,
                                         webServiceType,
                                         retrofitResponseListener
                                     )
                                 }
                                 STATUS_401 -> {
-                                    if(SHOW_SESSION_EXPIRE_DIALOG){
-                                        context.showDialogWithOneButton(context.getString(R.string.session_expired), context.getString(R.string.please_log_in_again), context.getString(R.string.ok), object : AlertButtonClickListener{
-                                            override fun onAlertClick(
-                                                dialog: DialogInterface,
-                                                which: Int
-                                            ) {
-                                                apiBroadcast()
-                                            }
-                                        })
+                                    if (SHOW_SESSION_EXPIRE_DIALOG) {
+                                        context.showDialogWithOneButton(
+                                            context.getString(R.string.session_expired),
+                                            context.getString(R.string.please_log_in_again),
+                                            context.getString(R.string.ok),
+                                            object : AlertButtonClickListener {
+                                                override fun onAlertClick(
+                                                    dialog: DialogInterface,
+                                                    which: Int
+                                                ) {
+                                                    dialog.dismiss()
+                                                    apiBroadcast(API_BROADCAST_STATUS_CODE_401)
+                                                }
+                                            })
 
                                     } else {
                                         context.showToast(response.message())
@@ -263,7 +272,35 @@ class ApiCall {
                                             response.body()?.string(),
                                             requestCode
                                         )
-                                        apiBroadcast()
+                                        apiBroadcast(API_BROADCAST_STATUS_CODE_401)
+                                    }
+                                }
+                                STATUS_426 -> {
+                                    if (SHOW_APP_UPDATE_DIALOG) {
+                                        val commonRes = Gson().fromJson(response.errorBody()?.string(), CommonRes::class.java)
+                                        context.showDialogWithOneButton(
+                                            context.getString(R.string.new_version_available),
+                                            commonRes?.message,
+                                            context.getString(R.string.update),
+                                            object : AlertButtonClickListener {
+                                                override fun onAlertClick(
+                                                    dialog: DialogInterface,
+                                                    which: Int
+                                                ) {
+                                                    IntentUtility(context).launchPlayStoreWithPackageName(
+                                                        context.packageName
+                                                    )
+                                                    apiBroadcast(API_BROADCAST_STATUS_CODE_426)
+                                                }
+                                            }, false)
+
+                                    } else {
+                                        context.showToast(response.message())
+                                        retrofitResponseListener.onSuccess(
+                                            response.body()?.string(),
+                                            requestCode
+                                        )
+                                        apiBroadcast(API_BROADCAST_STATUS_CODE_426)
                                     }
                                 }
                                 else -> {
@@ -280,7 +317,7 @@ class ApiCall {
                             }
 
                         } catch (e: Exception) {
-                            if(e.message!=null && e.message!!.isNotEmpty()) {
+                            if (e.message != null && e.message!!.isNotEmpty()) {
                                 context.showToast(e.message)
                             }
                             e.printStackTrace()
@@ -320,11 +357,19 @@ class ApiCall {
         }
     }
 
-    fun apiBroadcast(){
-        LocalBroadcastManager.getInstance(context).sendBroadcast(Intent(API_BROADCAST).putExtra(API_BROADCAST_DATA, API_BROADCAST_401))
+    fun apiBroadcast(statusCode: String) {
+        LocalBroadcastManager.getInstance(context)
+            .sendBroadcast(Intent(API_BROADCAST).putExtra(API_BROADCAST_DATA, statusCode))
     }
 
     fun handleNoInternetTimoutDialog(type: String) {
+
+//        if (type.equals(context.getString(R.string.timeout), true)) {
+//
+//        } else if (type.equals(context.getString(R.string.no_internet), true)) {
+//
+//        }
+
         val dialog = CustomDialog(context, R.style.full_screen_dialog).showDialog(
             R.layout.dialog_for_api,
             false,
@@ -416,6 +461,7 @@ class ApiCall {
         var MULTIPART_MODAL_LIST: ArrayList<MultipartModal>? = null
         var FILE_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().path + "/"
         var SHOW_SESSION_EXPIRE_DIALOG = true
+        var SHOW_APP_UPDATE_DIALOG = true
     }
 
 

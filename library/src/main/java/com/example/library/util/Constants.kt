@@ -16,6 +16,7 @@ const val STATUS_406 = 406  // Not acceptable - email not varified
 const val STATUS_409 = 409 // Conflict - password and email is not match
 const val STATUS_410 = 410 //
 const val STATUS_422 = 422 // Missing Parameters
+const val STATUS_426 = 426 // Missing Parameters
 
 // 5X
 const val STATUS_500 = 500 // Internal server
@@ -25,7 +26,8 @@ const val REQUEST_GALLERY = 201
 
 const val API_BROADCAST = "api_broadcast"
 const val API_BROADCAST_DATA = "api_broadcast_data"
-const val API_BROADCAST_401 = "api_broadcast_401"
+const val API_BROADCAST_STATUS_CODE_401 = "api_broadcast_status_code_401"
+const val API_BROADCAST_STATUS_CODE_426 = "api_broadcast_status_code_426"
 
 const val SOCKET_BROADCAST = "socket_broadcast_event"
 const val SOCKET_BROADCAST_EVENT_NAME = "socket_broadcast_event_name"

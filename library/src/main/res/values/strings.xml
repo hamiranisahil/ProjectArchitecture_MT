@@ -45,6 +45,8 @@
     <string name="session_expired">Session Expired</string>
     <string name="please_log_in_again">Please log in again.</string>
     <string name="ok">OK</string>
+    <string name="new_version_available">New version available</string>
+    <string name="update">UPDATE</string>
 
 
 </resources>
