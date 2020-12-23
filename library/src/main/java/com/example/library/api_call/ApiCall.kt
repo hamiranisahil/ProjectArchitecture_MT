@@ -160,15 +160,16 @@ class ApiCall {
 
     private fun call() {
         if (INTERNET_DIALOG_SHOW && context.isOnline()) {
-            printLog(
-                "ApiCall - Request",
-                "Headers: ${responseCall?.request()?.headers()} Url: ${
-                    responseCall?.request()?.url()
-                } Method: $method RequestCode: $requestCode WebServiceType: $webServiceType FileDownloadPath: $FILE_DOWNLOAD_PATH"
-            )
-            if (requestCode != 45) {
+            if(API_LOG_ENABLE) {
+                printLog(
+                        "ApiCall - Request",
+                        "Headers: ${responseCall?.request()?.headers()} Url: ${
+                            responseCall?.request()?.url()
+                        } Method: $method RequestCode: $requestCode WebServiceType: $webServiceType FileDownloadPath: $FILE_DOWNLOAD_PATH"
+                )
                 printLog("ApiCall - Request", "ParamsBody: $jsonString")
             }
+
             if (KEYBOARD_HIDE) {
                 context.hideKeyboard()
             }
@@ -234,10 +235,12 @@ class ApiCall {
                                     } else {
                                         bodyString = response.body()?.string()!!
                                     }
-                                    printLog(
-                                        "ApiCall - Response",
-                                        "ParamsBody: $bodyString"
-                                    )
+                                    if(API_LOG_ENABLE) {
+                                        printLog(
+                                                "ApiCall - Response",
+                                                "ParamsBody: $bodyString"
+                                        )
+                                    }
 
                                     // if you want to show dialog over bottomsheet or other custom dialog screen.
                                     /*if (LOADING_DIALOG_SHOW) {
@@ -358,10 +361,10 @@ class ApiCall {
                                 else -> {
                                     val responseBody = response.body()
                                     context.showToast(response.message())
-                                    if (requestCode != 45) {
+                                    if(API_LOG_ENABLE) {
                                         printLog(
-                                            "ApiCall - Response",
-                                            "ParamsBody: ${Gson().toJson(responseBody)}"
+                                                "ApiCall - Response",
+                                                "ParamsBody: ${Gson().toJson(responseBody)}"
                                         )
                                     }
                                     if (responseBody != null) {
@@ -383,7 +386,9 @@ class ApiCall {
                         } catch (e: Exception) {
                             if (e.message != null && e.message!!.isNotEmpty()) {
 //                                context.showToast(e.message)
-                                printLog("ApiCall - Response Not Parse", "${e.message}")
+                                if(API_LOG_ENABLE) {
+                                    printLog("ApiCall - Response Not Parse", "${e.message}")
+                                }
                             }
                             e.printStackTrace()
                             // if you want to show dialog over bottomsheet or other custom dialog screen.
@@ -411,7 +416,9 @@ class ApiCall {
                             handleNoInternetTimoutDialog(context.getString(R.string.timeout))
                         }
                         if (call.isCanceled) {
-                            printLog(TAG, t.message)
+                            if(API_LOG_ENABLE) {
+                                printLog(TAG, t.message!!)
+                            }
                         } else {
                             context.showToast(t.message)
                         }
@@ -562,6 +569,7 @@ class ApiCall {
 
     companion object {
         var BASE_URL = ""
+        var API_LOG_ENABLE = true
         var HEADER_MAP: HashMap<String, Any>? = null
         var LOADING_TITLE = "Loading..."
         var DIALOG_FULLSCREEN = true
