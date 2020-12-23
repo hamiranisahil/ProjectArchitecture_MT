@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken
 class GsonConvert<T>(val response: String) {
 
     fun typeToken(): T {
-        val typeToken = object : TypeToken<T>() {}
-        return Gson().fromJson<T>(response, typeToken.type) as T
+        val typeToken = object : TypeToken<T>() {}.type
+        return Gson().fromJson<T>(response, typeToken) as T
     }
 }

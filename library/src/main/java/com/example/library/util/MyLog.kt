@@ -6,5 +6,5 @@ import com.example.library.BuildConfig
 
 fun printLog(tag: String, message: String?) {
     if (BuildConfig.DEBUG)
-        Log.d(tag, message)
+        message?.let { Log.e(tag, it) }
 }

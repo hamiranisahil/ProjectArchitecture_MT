@@ -2,6 +2,7 @@ package com.example.library.util
 
 import android.util.Patterns
 import android.widget.EditText
+import com.google.android.material.textfield.TextInputLayout
 
 fun EditText.getTextFromEditText(): String {
     return text.toString().trim()
@@ -57,4 +58,9 @@ fun EditText.isValidMinMax(min: Int, max: Int): Boolean {
 
 fun String.isValidMinMax(min: Int, max: Int): Boolean {
     return isValidMin(min) && isValidMax(max)
+}
+
+fun TextInputLayout.setErrorMessage(message: String?) {
+    this.isErrorEnabled = message != null
+    this.error = message
 }

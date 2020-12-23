@@ -7,10 +7,13 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 
 
-fun Context.showKeyboard(view: View) {
+fun Context.showKeyboard() {
     val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+
+    /*val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     if (!imm.isActive)
-        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)*/
 }
 
 fun Context.hideKeyboard(): Boolean {

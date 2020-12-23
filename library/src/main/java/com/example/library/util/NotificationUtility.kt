@@ -61,7 +61,7 @@ class NotificationUtility(val context: Context) {
         builder.priority = NotificationCompat.PRIORITY_HIGH
         if (intent != null) {
             val pendingIntent =
-                PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                PendingIntent.getActivity(context, 0, intent, Intent.FLAG_ACTIVITY_NEW_TASK)
             builder.setContentIntent(pendingIntent)
         }
         val notification = builder.build()
@@ -172,6 +172,44 @@ class NotificationUtility(val context: Context) {
 
         getNotificationManager().notify(notificationId, builder.build())
     }
+
+    fun customBigNotification(
+        layout: Int,
+        remoteViewsListener: RemoteViewsListener,
+        channelId: String,
+        channelName: String,
+        smallIcon: Int,
+        sound: Uri?,
+        priority: Priority,
+        notificationId: Int = 0,
+    ) {
+        createNotificationChannel(channelId, channelName, priority)
+
+        val remoteViews = RemoteViews(context.packageName, layout)
+        remoteViewsListener.onCreateRemoteView(remoteViews)
+
+        val builder =
+            NotificationCompat.Builder(context, channelId).setPriority(Notification.PRIORITY_MAX)
+                .setCustomBigContentView(remoteViews)
+
+        setPriorityBelowOreo(builder, priority)
+
+//        Set Small Icon : If smallIcon value is -1 then set default("ic_launcher_foreground") icon otherwise set it's value.
+        if (smallIcon != -1) {
+            builder.setSmallIcon(smallIcon)
+        } else {
+            builder.setSmallIcon(android.R.drawable.ic_notification_overlay)
+        }
+
+        if (sound != null) {
+            builder.setSound(sound)
+        }
+
+        getNotificationManager().notify(notificationId, builder.build())
+    }
+
+
+
 
     fun cancelAll() {
         getNotificationManager().cancelAll()

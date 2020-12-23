@@ -3,7 +3,7 @@ package com.example.library.util
 import android.content.Context
 import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
-import com.example.library.util.CommonClass.Companion.ALERT_DIALOG_SHOWN
+import com.example.library.util.CommonClass.Companion.alertDialog
 
 fun Context.showDialogWithOneButton(
     title: String,
@@ -13,22 +13,24 @@ fun Context.showDialogWithOneButton(
     isCancelable: Boolean = false
 ) {
     try {
-        if (!ALERT_DIALOG_SHOWN) {
-            val builder = AlertDialog.Builder(this).setPositiveButton(buttonLabel, null).setTitle(title).setMessage(message).setCancelable(isCancelable)
-            val dialog = builder.create()
-                dialog.setOnShowListener { dialog ->
-                    val button = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
-                    button.setOnClickListener {
-                        ALERT_DIALOG_SHOWN = false
-                        alertButtonClickListener.onAlertClick(
-                            dialog,
-                            AlertDialog.BUTTON_POSITIVE
-                        )
-                    }
+        if (alertDialog == null || (alertDialog != null && !requireNotNull(alertDialog?.isShowing))) {
+            val builder =
+                AlertDialog.Builder(this).setPositiveButton(buttonLabel, null).setTitle(title)
+                    .setMessage(message).setCancelable(isCancelable)
+            alertDialog = builder.create()
+
+            alertDialog?.setOnShowListener { dialog ->
+                val button = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
+                button.setOnClickListener {
+                    alertButtonClickListener.onAlertClick(
+                        dialog,
+                        AlertDialog.BUTTON_POSITIVE
+                    )
                 }
-            dialog.show()
-            ALERT_DIALOG_SHOWN = true
+            }
+            alertDialog?.show()
         }
+
     } catch (e: Exception) {
         e.printStackTrace()
     }
@@ -43,12 +45,11 @@ fun Context.showDialogWithTwoButton(
     isCancelable: Boolean = false
 ) {
     try {
-        if (!ALERT_DIALOG_SHOWN) {
+        if (alertDialog == null || (alertDialog != null && !requireNotNull(alertDialog?.isShowing))) {
             val builder = AlertDialog.Builder(this).setTitle(setHtmlText(title))
                 .setMessage(setHtmlText(message)).setCancelable(isCancelable)
 
             builder.setPositiveButton(positiveButtonLabel) { dialog, which ->
-                ALERT_DIALOG_SHOWN = false
                 alertTwoButtonClickListener.onAlertClick(
                     dialog,
                     which,
@@ -56,7 +57,6 @@ fun Context.showDialogWithTwoButton(
                 )
             }
             builder.setNegativeButton(negativeButtonLabel) { dialog, which ->
-                ALERT_DIALOG_SHOWN = false
                 alertTwoButtonClickListener.onAlertClick(
                     dialog,
                     which,
@@ -64,7 +64,6 @@ fun Context.showDialogWithTwoButton(
                 )
             }
             builder.create().show()
-            ALERT_DIALOG_SHOWN = true
         }
     } catch (e: Exception) {
         e.printStackTrace()

@@ -1,24 +1,10 @@
 package com.example.library.socketio
 
 import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.example.library.BuildConfig
-import com.example.library.R
-import com.example.library.modals.CommonRes
-import com.example.library.util.*
-import com.google.gson.Gson
-import io.socket.client.IO
-import io.socket.client.Socket
-import io.socket.engineio.client.transports.WebSocket
-import org.jetbrains.anko.runOnUiThread
-import org.json.JSONObject
-
 
 class SocketIO(val context: Context) {
 
-    companion object {
+    /*companion object {
         var socket: Socket? = null
         var SOCKET_URL = ""
         var SHOW_SESSION_EXPIRE_DIALOG = true
@@ -141,5 +127,5 @@ class SocketIO(val context: Context) {
         val isConnected = socket!!.connected()
         printLog(TAG, "socketConnected: $isConnected")
         return isConnected
-    }
+    }*/
 }

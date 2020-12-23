@@ -8,7 +8,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.library.R
 import com.example.library.modals.CommonRes
 import com.example.library.util.*
-import com.google.gson.Gson
 
 class HandleStatusCode(
     val context: Context,
@@ -21,15 +20,50 @@ class HandleStatusCode(
 ) {
 
     init {
-
         removeNoDataIfFound()
 
         when (commonRes.statusCode) {
-            STATUS_200, STATUS_201, STATUS_204 -> {
-                if (webServiceType.equals(ApiCall.WebServiceType.WS_SIMPLE_WITH_MESSAGE, true) || webServiceType.equals(ApiCall.WebServiceType.WS_SIMPLE_WITH_SUCCESS_MESSAGE, true)) {
+            STATUS_200, STATUS_201 -> {
+                if (webServiceType.equals(
+                        ApiCall.WebServiceType.WS_SIMPLE_WITH_MESSAGE,
+                        true
+                    ) || webServiceType.equals(
+                        ApiCall.WebServiceType.WS_SIMPLE_WITH_SUCCESS_MESSAGE,
+                        true
+                    ) || webServiceType.equals(
+                        ApiCall.WebServiceType.WS_SIMPLE_ONLY_SUCCESS_MESSAGE,
+                        true
+                    )
+                ) {
                     showSnackbar()
                 }
                 retrofitResponseListener.onSuccess(bodyString, requestCode)
+            }
+            STATUS_204 -> {
+                if (webServiceType.equals(
+                        ApiCall.WebServiceType.WS_SIMPLE_WITH_MESSAGE,
+                        true
+                    ) || webServiceType.equals(
+                        ApiCall.WebServiceType.WS_SIMPLE_WITH_SUCCESS_MESSAGE,
+                        true
+                    ) || webServiceType.equals(
+                        ApiCall.WebServiceType.WS_SIMPLE_ONLY_SUCCESS,
+                        true
+                    ) || webServiceType.equals(
+                        ApiCall.WebServiceType.WS_SIMPLE_ONLY_SUCCESS_MESSAGE,
+                        true
+                    )
+                ) {
+                    showSnackbar()
+                }
+                if (webServiceType.equals(
+                        ApiCall.WebServiceType.WS_SIMPLE_ONLY_SUCCESS_MESSAGE,
+                        true
+                    ) || webServiceType.equals(ApiCall.WebServiceType.WS_SIMPLE_ONLY_SUCCESS, true)
+                ) {
+                } else {
+                    retrofitResponseListener.onSuccess(bodyString, requestCode)
+                }
             }
             STATUS_208 -> {
                 showSnackbar()
@@ -52,19 +86,40 @@ class HandleStatusCode(
                 checkStatusWithSuccess()
             }
             STATUS_422 -> {
-                if (webServiceType.equals(ApiCall.WebServiceType.WS_SIMPLE_WITH_MESSAGE, true) || webServiceType.equals(ApiCall.WebServiceType.WS_SIMPLE_WITH_SUCCESS_MESSAGE, true)) {
+                if (webServiceType.equals(
+                        ApiCall.WebServiceType.WS_SIMPLE_WITH_MESSAGE,
+                        true
+                    ) || webServiceType.equals(
+                        ApiCall.WebServiceType.WS_SIMPLE_WITH_SUCCESS_MESSAGE,
+                        true
+                    )
+                ) {
                     showSnackbar()
                 }
                 checkStatusWithSuccess()
             }
             else -> {
+                if (webServiceType.equals(
+                        ApiCall.WebServiceType.WS_SIMPLE_WITH_MESSAGE,
+                        true
+                    ) || webServiceType.equals(
+                        ApiCall.WebServiceType.WS_SIMPLE_WITH_SUCCESS_MESSAGE,
+                        true
+                    )
+                ) {
+                    showSnackbar()
+                }
                 retrofitResponseListener.onSuccess(bodyString, requestCode)
             }
         }
     }
 
-    private fun checkStatusWithSuccess(){
-        if (webServiceType.equals(ApiCall.WebServiceType.WS_SIMPLE_WITH_SUCCESS, true) || webServiceType.equals(ApiCall.WebServiceType.WS_SIMPLE_WITH_SUCCESS_MESSAGE, true)) {
+    private fun checkStatusWithSuccess() {
+        if (webServiceType.equals(
+                ApiCall.WebServiceType.WS_SIMPLE_WITH_SUCCESS,
+                true
+            ) || webServiceType.equals(ApiCall.WebServiceType.WS_SIMPLE_WITH_SUCCESS_MESSAGE, true)
+        ) {
             retrofitResponseListener.onSuccess(bodyString, requestCode)
         }
     }

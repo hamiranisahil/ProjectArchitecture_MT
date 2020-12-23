@@ -17,6 +17,12 @@
 
 <resources>
 
+    <!--MyTextView ATTRS-->
+    <declare-styleable name="MyTextView">
+        <attr name="text_size" format="integer" />
+        <attr name="precision_value" format="integer" />
+    </declare-styleable>
+
     <declare-styleable name="superrecyclerview">
         <attr name="layout_empty" format="reference"/>
         <attr name="layout_moreProgress" format="reference"/>
@@ -50,6 +56,11 @@
             <enum name="lay_down" value="0"/>
             <enum name="pull_out" value="1"/>
         </attr>
+    </declare-styleable>
+
+    <declare-styleable name="Quarter">
+        <attr name="canvasOpeningSpeed" format="integer" />
+        <attr name="canvasClosingSpeed" format="integer" />
     </declare-styleable>
 
     <!--NUMBER KEYBOARD-->
@@ -115,6 +126,28 @@
         <attr name="civ_border_color" format="color"/>
         <attr name="civ_border_overlay" format="boolean"/>
         <attr name="civ_circle_background_color" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="CircularProgressBar">
+        <attr name="maximum" format="float" />
+        <attr name="progress" format="float" />
+        <attr name="animateProgress" format="boolean" />
+        <attr name="progressAnimationDuration" format="integer" />
+        <attr name="foregroundStrokeColor" format="color" />
+        <attr name="foregroundStrokeWidth" format="dimension" />
+        <attr name="drawBackgroundStroke" format="boolean" />
+        <attr name="backgroundStrokeColor" format="color" />
+        <attr name="backgroundStrokeWidth" format="dimension" />
+        <attr name="startAngle" format="float" />
+        <attr name="indeterminate" format="boolean" />
+        <attr name="indeterminateMinimumAngle" format="float" />
+        <attr name="indeterminateSweepAnimationDuration" format="integer" />
+        <attr name="indeterminateRotationAnimationDuration" format="integer" />
+        <attr name="foregroundStrokeCap" format="enum">
+            <enum name="butt" value="0" />
+            <enum name="round" value="1" />
+            <enum name="square" value="2" />
+        </attr>
     </declare-styleable>
     <!--END-->
 

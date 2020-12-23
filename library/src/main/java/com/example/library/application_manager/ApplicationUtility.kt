@@ -33,7 +33,7 @@ class ApplicationUtility {
         } else {
             val taskInfo = am.getRunningTasks(1)
             val componentInfo = taskInfo[0].topActivity
-            if (componentInfo.packageName == context.packageName) {
+            if (componentInfo!!.packageName == context.packageName) {
                 isInBackground = false
             }
         }

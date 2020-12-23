@@ -2,7 +2,6 @@ package com.example.library.superrecyclerview.swipe;
 
 import android.view.View;
 
-
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.library.R;

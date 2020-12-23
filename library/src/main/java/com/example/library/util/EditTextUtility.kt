@@ -9,25 +9,35 @@ private val delay = 500L
 private var lastEditTime = 0L
 private var handler = Handler()
 
-fun EditText.userTypingListener(typingListener: TypingListener) {
+fun EditText.userTypingListener(typingListener: TypingListener?) {
     val runnable = Runnable {
         run {
             if (System.currentTimeMillis() > (lastEditTime + delay - 500)) {
-                typingListener.typingStopped(this)
+                typingListener?.typingStopped(this)
             }
         }
     }
     this.addTextChangedListener(object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
             lastEditTime = System.currentTimeMillis()
-            handler.postDelayed(runnable, delay)
+            try {
+                handler.postDelayed(runnable, delay)
+            } catch (e: Exception) {
+                printLog("afterTextChanged", "${e.message}")
+            }
+
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
         }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            handler.removeCallbacks(runnable)
+            try {
+                handler.removeCallbacks(runnable)
+            } catch (e: Exception) {
+                printLog("onTextChanged", "${e.message}")
+            }
+
         }
 
     })

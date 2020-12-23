@@ -1,25 +1,7 @@
 package com.example.library.superrecyclerview;
 
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewStub;
-import android.widget.FrameLayout;
-
-import androidx.annotation.ColorRes;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import com.example.library.R;
-import com.example.library.superrecyclerview.swipe.SwipeDismissRecyclerViewTouchListener;
-import com.example.library.superrecyclerview.util.FloatUtil;
-
-public class SuperRecyclerView extends FrameLayout {
+public class SuperRecyclerView {
+}/* extends FrameLayout {
 
     protected int ITEM_LEFT_TO_LOAD_MORE = 10;
 
@@ -128,9 +110,118 @@ public class SuperRecyclerView extends FrameLayout {
         initRecyclerView(v);
     }
 
-    /**
-     * Implement this method to customize the AbsListView
-     */
+    *//**
+ * Implement this method to customize the AbsListView
+ *
+ * @param adapter                       The new adapter to set, or null to set no adapter
+ * @param compatibleWithPrevious        Should be set to true if new adapter uses the same {@android.support.v7.widget.RecyclerView.ViewHolder}
+ * as previous one
+ * @param removeAndRecycleExistingViews If set to true, RecyclerView will recycle all existing Views. If adapters
+ * have stable ids and/or you want to animate the disappearing views, you may
+ * prefer to set this to false
+ * <p>
+ * Set the layout manager to the recycler
+ * <p>
+ * Set the adapter to the recycler
+ * Automatically hide the progressbar
+ * Set the refresh to false
+ * If adapter is empty, then the emptyview is shown
+ * @param adapter                       The new adapter to , or null to set no adapter.
+ * @param removeAndRecycleExistingViews If set to true, RecyclerView will recycle all existing Views. If adapters
+ * have stable ids and/or you want to animate the disappearing views, you may
+ * prefer to set this to false.
+ * <p>
+ * Remove the adapter from the recycler
+ * <p>
+ * Show the progressbar
+ * <p>
+ * Hide the progressbar and show the recycler
+ * <p>
+ * Set the listener when refresh is triggered and enable the SwipeRefreshLayout
+ * <p>
+ * Set the colors for the SwipeRefreshLayout states
+ * <p>
+ * Set the colors for the SwipeRefreshLayout states
+ * <p>
+ * Hide the progressbar
+ * <p>
+ * Hide the recycler
+ * <p>
+ * Set the scroll listener for the recycler
+ * <p>
+ * Add the onItemTouchListener for the recycler
+ * <p>
+ * Remove the onItemTouchListener for the recycler
+ * @return the recycler adapter
+ * <p>
+ * Sets the More listener
+ * @param max Number of items before loading more
+ * <p>
+ * Enable/Disable the More event
+ * <p>
+ * Remove the moreListener
+ * @return inflated progress view or null
+ * @return inflated more progress view or null
+ * @return inflated empty view or null
+ * <p>
+ * Animate a scroll by the given amount of pixels along either axis.
+ * @param dx Pixels to scroll horizontally
+ * @param dy Pixels to scroll vertically
+ * @param adapter                       The new adapter to set, or null to set no adapter
+ * @param compatibleWithPrevious        Should be set to true if new adapter uses the same {@android.support.v7.widget.RecyclerView.ViewHolder}
+ * as previous one
+ * @param removeAndRecycleExistingViews If set to true, RecyclerView will recycle all existing Views. If adapters
+ * have stable ids and/or you want to animate the disappearing views, you may
+ * prefer to set this to false
+ * <p>
+ * Set the layout manager to the recycler
+ * <p>
+ * Set the adapter to the recycler
+ * Automatically hide the progressbar
+ * Set the refresh to false
+ * If adapter is empty, then the emptyview is shown
+ * @param adapter                       The new adapter to , or null to set no adapter.
+ * @param removeAndRecycleExistingViews If set to true, RecyclerView will recycle all existing Views. If adapters
+ * have stable ids and/or you want to animate the disappearing views, you may
+ * prefer to set this to false.
+ * <p>
+ * Remove the adapter from the recycler
+ * <p>
+ * Show the progressbar
+ * <p>
+ * Hide the progressbar and show the recycler
+ * <p>
+ * Set the listener when refresh is triggered and enable the SwipeRefreshLayout
+ * <p>
+ * Set the colors for the SwipeRefreshLayout states
+ * <p>
+ * Set the colors for the SwipeRefreshLayout states
+ * <p>
+ * Hide the progressbar
+ * <p>
+ * Hide the recycler
+ * <p>
+ * Set the scroll listener for the recycler
+ * <p>
+ * Add the onItemTouchListener for the recycler
+ * <p>
+ * Remove the onItemTouchListener for the recycler
+ * @return the recycler adapter
+ * <p>
+ * Sets the More listener
+ * @param max Number of items before loading more
+ * <p>
+ * Enable/Disable the More event
+ * <p>
+ * Remove the moreListener
+ * @return inflated progress view or null
+ * @return inflated more progress view or null
+ * @return inflated empty view or null
+ * <p>
+ * Animate a scroll by the given amount of pixels along either axis.
+ * @param dx Pixels to scroll horizontally
+ * @param dy Pixels to scroll vertically
+ *//*
     protected void initRecyclerView(View view) {
         View recyclerView = view.findViewById(android.R.id.list);
 
@@ -242,14 +333,14 @@ public class SuperRecyclerView extends FrameLayout {
         return max;
     }
 
-    /**
-     * @param adapter                       The new adapter to set, or null to set no adapter
-     * @param compatibleWithPrevious        Should be set to true if new adapter uses the same {@android.support.v7.widget.RecyclerView.ViewHolder}
-     *                                      as previous one
-     * @param removeAndRecycleExistingViews If set to true, RecyclerView will recycle all existing Views. If adapters
-     *                                      have stable ids and/or you want to animate the disappearing views, you may
-     *                                      prefer to set this to false
-     */
+    *//**
+ * @param adapter                       The new adapter to set, or null to set no adapter
+ * @param compatibleWithPrevious        Should be set to true if new adapter uses the same {@android.support.v7.widget.RecyclerView.ViewHolder}
+ *                                      as previous one
+ * @param removeAndRecycleExistingViews If set to true, RecyclerView will recycle all existing Views. If adapters
+ *                                      have stable ids and/or you want to animate the disappearing views, you may
+ *                                      prefer to set this to false
+ *//*
     private void setAdapterInternal(RecyclerView.Adapter adapter, boolean compatibleWithPrevious,
                                     boolean removeAndRecycleExistingViews) {
         if (compatibleWithPrevious)
@@ -312,29 +403,29 @@ public class SuperRecyclerView extends FrameLayout {
         }
     }
 
-    /**
-     * Set the layout manager to the recycler
-     */
+    *//**
+ * Set the layout manager to the recycler
+ *//*
     public void setLayoutManager(RecyclerView.LayoutManager manager) {
         mRecycler.setLayoutManager(manager);
     }
 
-    /**
-     * Set the adapter to the recycler
-     * Automatically hide the progressbar
-     * Set the refresh to false
-     * If adapter is empty, then the emptyview is shown
-     */
+    *//**
+ * Set the adapter to the recycler
+ * Automatically hide the progressbar
+ * Set the refresh to false
+ * If adapter is empty, then the emptyview is shown
+ *//*
     public void setAdapter(RecyclerView.Adapter adapter) {
         setAdapterInternal(adapter, false, true);
     }
 
-    /**
-     * @param adapter                       The new adapter to , or null to set no adapter.
-     * @param removeAndRecycleExistingViews If set to true, RecyclerView will recycle all existing Views. If adapters
-     *                                      have stable ids and/or you want to animate the disappearing views, you may
-     *                                      prefer to set this to false.
-     */
+    *//**
+ * @param adapter                       The new adapter to , or null to set no adapter.
+ * @param removeAndRecycleExistingViews If set to true, RecyclerView will recycle all existing Views. If adapters
+ *                                      have stable ids and/or you want to animate the disappearing views, you may
+ *                                      prefer to set this to false.
+ *//*
     public void swapAdapter(RecyclerView.Adapter adapter, boolean removeAndRecycleExistingViews) {
         setAdapterInternal(adapter, true, removeAndRecycleExistingViews);
     }
@@ -356,25 +447,25 @@ public class SuperRecyclerView extends FrameLayout {
         mRecycler.setOnTouchListener(touchListener);
     }
 
-    /**
-     * Remove the adapter from the recycler
-     */
+    *//**
+ * Remove the adapter from the recycler
+ *//*
     public void clear() {
         mRecycler.setAdapter(null);
     }
 
-    /**
-     * Show the progressbar
-     */
+    *//**
+ * Show the progressbar
+ *//*
     public void showProgress() {
         hideRecycler();
         if (mEmptyId != 0) mEmpty.setVisibility(View.INVISIBLE);
         mProgress.setVisibility(View.VISIBLE);
     }
 
-    /**
-     * Hide the progressbar and show the recycler
-     */
+    *//**
+ * Hide the progressbar and show the recycler
+ *//*
     public void showRecycler() {
         hideProgress();
         if (mRecycler.getAdapter().getItemCount() == 0 && mEmptyId != 0) {
@@ -397,75 +488,89 @@ public class SuperRecyclerView extends FrameLayout {
         mPtrLayout.setRefreshing(refreshing);
     }
 
-    /**
-     * Set the listener when refresh is triggered and enable the SwipeRefreshLayout
-     */
+    *//**
+ * Set the listener when refresh is triggered and enable the SwipeRefreshLayout
+ *//*
     public void setRefreshListener(SwipeRefreshLayout.OnRefreshListener listener) {
         mPtrLayout.setEnabled(true);
         mPtrLayout.setOnRefreshListener(listener);
     }
 
-    /**
-     * Set the colors for the SwipeRefreshLayout states
-     */
+    *//**
+ * Set the colors for the SwipeRefreshLayout states
+ *//*
     public void setRefreshingColorResources(@ColorRes int colRes1, @ColorRes int colRes2, @ColorRes int colRes3, @ColorRes int colRes4) {
         mPtrLayout.setColorSchemeResources(colRes1, colRes2, colRes3, colRes4);
     }
 
-    /**
-     * Set the colors for the SwipeRefreshLayout states
-     */
+    *//**
+ * Set the colors for the SwipeRefreshLayout states
+ *//*
     public void setRefreshingColor(int col1, int col2, int col3, int col4) {
         mPtrLayout.setColorSchemeColors(col1, col2, col3, col4);
     }
 
-    /**
-     * Hide the progressbar
-     */
+    *//**
+ * Hide the progressbar
+ *//*
     public void hideProgress() {
         mProgress.setVisibility(View.GONE);
     }
 
-    /**
-     * Hide the recycler
-     */
+    *//**
+ * Hide the recycler
+ *//*
     public void hideRecycler() {
         mRecycler.setVisibility(View.GONE);
     }
 
-    /**
-     * Set the scroll listener for the recycler
-     */
+    *//**
+ * Set the scroll listener for the recycler
+ *//*
     public void setOnScrollListener(RecyclerView.OnScrollListener listener) {
         mExternalOnScrollListener = listener;
     }
 
-    /**
-     * Add the onItemTouchListener for the recycler
-     */
+    *//**
+ * Add the onItemTouchListener for the recycler
+ *//*
     public void addOnItemTouchListener(RecyclerView.OnItemTouchListener listener) {
         mRecycler.addOnItemTouchListener(listener);
     }
 
-    /**
-     * Remove the onItemTouchListener for the recycler
-     */
+    *//**
+ * Remove the onItemTouchListener for the recycler
+ *//*
     public void removeOnItemTouchListener(RecyclerView.OnItemTouchListener listener) {
         mRecycler.removeOnItemTouchListener(listener);
     }
 
-    /**
-     * @return the recycler adapter
-     */
+    *//**
+ * @return the recycler adapter
+ * <p>
+ * Sets the More listener
+ * @param max Number of items before loading more
+ * <p>
+ * Enable/Disable the More event
+ * <p>
+ * Remove the moreListener
+ * @return inflated progress view or null
+ * @return inflated more progress view or null
+ * @return inflated empty view or null
+ * <p>
+ * Animate a scroll by the given amount of pixels along either axis.
+ * @param dx Pixels to scroll horizontally
+ * @param dy Pixels to scroll vertically
+ *//*
     public RecyclerView.Adapter getAdapter() {
         return mRecycler.getAdapter();
     }
 
-    /**
-     * Sets the More listener
-     *
-     * @param max Number of items before loading more
-     */
+    *//**
+ * Sets the More listener
+ *
+ * @param max Number of items before loading more
+ *//*
     public void setupMoreListener(OnMoreListener onMoreListener, int max) {
         mOnMoreListener = onMoreListener;
         ITEM_LEFT_TO_LOAD_MORE = max;
@@ -483,16 +588,16 @@ public class SuperRecyclerView extends FrameLayout {
         return isLoadingMore;
     }
 
-    /**
-     * Enable/Disable the More event
-     */
+    *//**
+ * Enable/Disable the More event
+ *//*
     public void setLoadingMore(boolean isLoadingMore) {
         this.isLoadingMore = isLoadingMore;
     }
 
-    /**
-     * Remove the moreListener
-     */
+    *//**
+ * Remove the moreListener
+ *//*
     public void removeMoreListener() {
         mOnMoreListener = null;
     }
@@ -514,33 +619,33 @@ public class SuperRecyclerView extends FrameLayout {
         mRecycler.removeItemDecoration(itemDecoration);
     }
 
-    /**
-     * @return inflated progress view or null
-     */
+    *//**
+ * @return inflated progress view or null
+ *//*
     public View getProgressView() {
         return mProgressView;
     }
 
-    /**
-     * @return inflated more progress view or null
-     */
+    *//**
+ * @return inflated more progress view or null
+ *//*
     public View getMoreProgressView() {
         return mMoreProgressView;
     }
 
-    /**
-     * @return inflated empty view or null
-     */
+    *//**
+ * @return inflated empty view or null
+ *//*
     public View getEmptyView() {
         return mEmptyView;
     }
 
-    /**
-     * Animate a scroll by the given amount of pixels along either axis.
-     *
-     * @param dx Pixels to scroll horizontally
-     * @param dy Pixels to scroll vertically
-     */
+    *//**
+ * Animate a scroll by the given amount of pixels along either axis.
+ *
+ * @param dx Pixels to scroll horizontally
+ * @param dy Pixels to scroll vertically
+ *//*
     public void smoothScrollBy(int dx, int dy) {
         mRecycler.smoothScrollBy(dx, dy);
     }
@@ -551,3 +656,4 @@ public class SuperRecyclerView extends FrameLayout {
         STAGGERED_GRID
     }
 }
+*/

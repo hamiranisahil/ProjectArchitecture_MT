@@ -1,5 +1,6 @@
 package com.example.library.util
 
+import android.annotation.SuppressLint
 import android.text.format.DateUtils
 import android.util.Log
 import java.text.ParseException
@@ -7,6 +8,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class DateUtility {
+    /*
+    EEE, EEEE : Mon, Monday
+    MMM, MMMM : Mar , March
+     */
 
     // TimeZone
     val TIMEZONE_GMT = "GMT-7"
@@ -14,6 +19,10 @@ class DateUtility {
 
     object CommonFormat {
         const val D = "d"
+        const val M = "m"
+        const val MM = "mm"
+        const val DD = "dd"
+        const val yyyy = "yyyy"
         const val EEEE = "EEEE"
     }
 
@@ -26,16 +35,21 @@ class DateUtility {
         const val DD_MM_YYYY_HH_MM_A_DASH_DATE = "dd-MM-yyyy hh:mm a"
 
     }
-
     // Date Pattern
     object DateFormat {
         const val YYYY_MM_DD = "yyyy-MM-dd"
         const val DD_MM_YYYY_SLASH = "dd/MM/yyyy"
         const val DD_MM_YYYY_DASH = "dd-MM-yyyy"
         const val MMMM_yyyy = "MMMM yyyy"
-        const val EE_MMM_dd = "EEE MMM dd"
+        //        const val EE_MMM_dd = "EEE MMM dd"
         const val MMM_DD_YYYY = "MMM dd, yyyy"
+        const val MMMM_DD_YYYY = "MMMM dd, yyyy"
         const val MMMM_dd_yyyy_SLASH = "MMMM/dd/yyyy"
+        const val MM_dd_yy_SLASH = "MM/dd/yy"
+        const val EEE_MMM_dd = "EEE, MMM, dd"
+        const val EEEE_MMM_dd = "EEEE, MMM. dd"
+        const val MMM_dd_YYYY = "MMM. dd, yyy"
+        const val MM_DD_YYYY_SLASH_h_mm_a = "MM/dd/yy, h:mm a"
     }
 
     // Time Pattern
@@ -43,6 +57,7 @@ class DateUtility {
         const val HH_MM_SS = "HH:mm:ss"
         const val HH_MM = "HH:mm"
         const val hh_mm_a = "hh:mm a"
+        const val h_mm_a = "h:mm a"
     }
 
     private val TAG = DateUtility::class.java.simpleName
@@ -52,7 +67,7 @@ class DateUtility {
     }
 
     fun format(format: String, date: String): String {
-        return SimpleDateFormat(format, Locale.getDefault()).format(formatDate(date))
+        return SimpleDateFormat(format, Locale.getDefault()).format(formatDate(format, date))
     }
 
     fun format(format: String, milliseconds: Long, locale: Locale?): String {
@@ -62,12 +77,12 @@ class DateUtility {
         return SimpleDateFormat(format, Locale.getDefault()).format(Date(milliseconds))
     }
 
-    fun formatDate(dateString: String?): Date? {
+    fun formatDate(format: String, dateString: String?): Date? {
         var date: Date? = null
         if (dateString != null) {
             try {
                 date =
-                    SimpleDateFormat(getDatePattern(dateString), Locale.getDefault()).parse(
+                    SimpleDateFormat(getDatePattern(dateString, format), Locale.getDefault()).parse(
                         dateString.trim { it <= ' ' })
             } catch (e: ParseException) {
                 e.printStackTrace()
@@ -87,6 +102,22 @@ class DateUtility {
         return -1
     }
 
+    @SuppressLint("SimpleDateFormat")
+    fun convertDate(date: String, input_formate: String, output_formate: String): String {
+        try {
+            val Input_formate = SimpleDateFormat(input_formate)
+            val date1 = Input_formate.parse(date)
+            val Output_formate = SimpleDateFormat(output_formate)
+            printLog("convertDate", "app= " + Output_formate.format(date1))
+            return Output_formate.format(date1)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            printLog("convertDate", "" + e.message)
+        }
+        return ""
+
+    }
+
     fun unixTimestampToDate(format: String, milliseconds: Long?): String {
         return unixTimestampToDate(format, milliseconds, Locale.getDefault())
     }
@@ -95,9 +126,15 @@ class DateUtility {
         return SimpleDateFormat(format, locale).format(Date(milliseconds!! * 1000L))
     }
 
-    private fun getDatePattern(dateString: String?): String {
+    private fun getDatePattern(dateString: String?, format: String? = null): String {
         var pattern = ""
-        if (isDateTime(dateString)) {
+        if (format.equals(CommonFormat.D)) {
+            pattern = format!!
+        } else if (format.equals(CommonFormat.M)) {
+            pattern = format!!
+        } else if (format.equals(CommonFormat.MM)) {
+            pattern = format!!
+        } else if (isDateTime(dateString)) {
             if (dateString!!.contains("/")) {
                 if (checkIsValid(dateString, DateFormat.DD_MM_YYYY_DASH)) {
                     pattern = DateFormat.DD_MM_YYYY_DASH
@@ -118,13 +155,18 @@ class DateUtility {
         } else {
             if (dateString.contains("-")) {
                 if (checkIsValid(DateFormat.DD_MM_YYYY_DASH, dateString)) {
-                    pattern = DateFormat.DD_MM_YYYY_DASH
+                    pattern = format!!
+                } else if (checkIsValid(DateFormat.YYYY_MM_DD, dateString)) {
+                    pattern = format!!
                 }
             } else {
-                if (checkIsValid(DateFormat.YYYY_MM_DD, dateString)) {
-                    pattern = DateFormat.YYYY_MM_DD
-                } else if (checkIsValid(DateFormat.DD_MM_YYYY_SLASH, dateString)) {
-                    pattern = DateFormat.DD_MM_YYYY_SLASH
+                when {
+                    checkIsValid(DateFormat.YYYY_MM_DD, dateString) -> {
+                        pattern = DateFormat.YYYY_MM_DD
+                    }
+                    checkIsValid(DateFormat.DD_MM_YYYY_SLASH, dateString) -> {
+                        pattern = DateFormat.DD_MM_YYYY_SLASH
+                    }
                 }
             }
         }
@@ -179,10 +221,26 @@ class DateUtility {
         return calendar.time
     }
 
-    fun addHoursToDate(date: Date, hours: Int): Date? {
+    fun addHoursToDate(date: Date, hours: Int, minutes: Int, format: String): String? {
         val calendar = Calendar.getInstance()
         calendar.time = date
         calendar.add(Calendar.HOUR, hours)
+        calendar.add(Calendar.MINUTE, minutes)
+        return SimpleDateFormat(format, Locale.getDefault()).format(calendar.time)
+    }
+
+    fun addMinutesToDate(date: Date, minutes: Int, format: String): String? {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.MINUTE, minutes)
+        return SimpleDateFormat(format, Locale.getDefault()).format(calendar.time)
+    }
+
+
+    fun addMinutesToDate(date: Date, minutes: Int): Date? {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.add(Calendar.MINUTE, minutes)
         return calendar.time
     }
 
@@ -205,6 +263,7 @@ class DateUtility {
         val sdfInput = SimpleDateFormat(format, Locale.getDefault())
         return sdfInput.parse(date)
     }
+
 
 //    fun convertTimezone(date: Date?, outputFormat: String?, timeZone: String?): String? {
 //        val sdfOutput = SimpleDateFormat(outputFormat, Locale.getDefault())

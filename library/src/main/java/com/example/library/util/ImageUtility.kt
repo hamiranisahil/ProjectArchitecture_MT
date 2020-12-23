@@ -1,10 +1,9 @@
 package com.example.library.util
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
+import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.util.Base64
+import android.view.View
 import java.io.ByteArrayOutputStream
 import java.io.File
 
@@ -33,4 +32,28 @@ fun getBitmapFromDrawable(drawable: Drawable): Bitmap {
 
 fun getBitmapFromFilePath(path: String): Bitmap? {
     return BitmapFactory.decodeFile(File(path).absolutePath)
+}
+
+fun getBitmapFromView(view: View): Bitmap? {
+    view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+    view.layout(0, 0, view.measuredWidth, view.measuredHeight)
+    var bitmap =
+        Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+    var canvas = Canvas(bitmap)
+    view.draw(canvas)
+    return bitmap
+}
+
+private fun getMarkerBitmapFromView(view: View): Bitmap {
+    view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+    view.layout(0, 0, view.measuredWidth, view.measuredHeight)
+    val returnedBitmap = Bitmap.createBitmap(
+        view.measuredWidth, view.measuredHeight,
+        Bitmap.Config.ARGB_8888
+    )
+    val canvas = Canvas(returnedBitmap)
+    canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN)
+    view.background?.draw(canvas)
+    view.draw(canvas)
+    return returnedBitmap
 }

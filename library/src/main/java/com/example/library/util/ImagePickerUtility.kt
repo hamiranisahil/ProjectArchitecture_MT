@@ -38,15 +38,17 @@ class ImagePickerUtility {
     private fun cameraIntent() {
         PermissionManagerUtility().requestPermission(
             sContext,
-            true,
+            false,
             REQUEST_CODE_CAMERA,
             object : PermissionManagerUtility.PermissionListener {
                 override fun onAppPermissions(
                     grantPermissions: ArrayList<String>,
                     deniedPermissions: ArrayList<String>
                 ) {
-                    val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                    (sContext as Activity).startActivityForResult(intent, REQUEST_CAMERA)
+                    if (deniedPermissions.size <= 0) {
+                        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                        (sContext as Activity).startActivityForResult(intent, REQUEST_CAMERA)
+                    }
                 }
             },
             Manifest.permission.CAMERA,
@@ -58,20 +60,22 @@ class ImagePickerUtility {
     private fun galleryIntent() {
         PermissionManagerUtility().requestPermission(
             sContext,
-            true,
+            false,
             REQUEST_CODE_CAMERA,
             object : PermissionManagerUtility.PermissionListener {
                 override fun onAppPermissions(
                     grantPermissions: ArrayList<String>,
                     deniedPermissions: ArrayList<String>
                 ) {
-                    val intent = Intent()
-                    intent.type = "image/*"
-                    intent.action = Intent.ACTION_GET_CONTENT
-                    (sContext as Activity).startActivityForResult(
-                        Intent.createChooser(intent, "Select File"),
-                        REQUEST_GALLERY
-                    )
+                    if (deniedPermissions.size <= 0) {
+                        val intent = Intent()
+                        intent.type = "image/*"
+                        intent.action = Intent.ACTION_GET_CONTENT
+                        (sContext as Activity).startActivityForResult(
+                            Intent.createChooser(intent, "Select File"),
+                            REQUEST_GALLERY
+                        )
+                    }
                 }
             },
             Manifest.permission.READ_EXTERNAL_STORAGE,

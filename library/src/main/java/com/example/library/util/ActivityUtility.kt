@@ -12,12 +12,13 @@ const val DEFAULT_REQUEST_CODE = 12896
 
 fun Context.openActivity(to: Class<out AppCompatActivity>, bundle: Bundle?, finish: Finish) {
     val intent = Intent(this, to)
+    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
     if (bundle != null)
         intent.putExtras(bundle)
     this.startActivity(intent)
 
     if (finish == Finish.CLOSE_PREVIOUS)
-        (this as AppCompatActivity).finish()
+        (this as Activity).finish()
     else if (finish == Finish.CLOSE_ALL_PREVIOUS)
         (this as Activity).finishAffinity()
 
@@ -40,17 +41,18 @@ fun Context.openActivity(
     }
 
     if (finish == Finish.CLOSE_PREVIOUS)
-        (this as AppCompatActivity).finish()
+        (this as Activity).finish()
     else if (finish == Finish.CLOSE_ALL_PREVIOUS)
         (this as Activity).finishAffinity()
 }
 
-fun Activity.setFullScreenActivity(){
+fun Activity.setFullScreenActivity() {
     //set full screen display
     this.requestWindowFeature(Window.FEATURE_NO_TITLE)
     this.window.setFlags(
         WindowManager.LayoutParams.FLAG_FULLSCREEN,
-        WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        WindowManager.LayoutParams.FLAG_FULLSCREEN
+    )
 }
 
 enum class Finish {

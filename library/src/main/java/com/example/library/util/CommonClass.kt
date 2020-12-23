@@ -1,7 +1,9 @@
 package com.example.library.util
 
+import androidx.appcompat.app.AlertDialog
+
 class CommonClass {
     companion object {
-        var ALERT_DIALOG_SHOWN = false
+        var alertDialog: AlertDialog? = null
     }
 }

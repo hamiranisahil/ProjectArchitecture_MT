@@ -10,7 +10,7 @@ class UnitConverterUtility {
         return miles * 1609.344
     }
 
-    fun milesToKm(miles: Int) : Double{
+    fun milesToKm(miles: Double): Double {
         return miles * 1.609
     }
 

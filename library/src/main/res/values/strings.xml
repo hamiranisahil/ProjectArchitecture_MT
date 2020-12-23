@@ -33,20 +33,21 @@
     <string name="developer_name">Developer Name</string>
     <string name="navigation_guidance_day" translatable="false">mapbox://styles/mapbox/navigation-guidance-day-v4</string>
     <string name="list">List</string>
-    <string name="loading">Loading..</string>
+    <string name="loading">Loading…</string>
     <string name="no_data_found">No data found !</string>
     <string name="file_download_successfully">File Download Successfully</string>
     <string name="api_level_pie_cleartext_support_disabled"><![CDATA[API Level 28 > CLEARTEXT Support Disabled..]]></string>
     <string name="something_wrong">Something Wrong.</string>
     <string name="check_your_connection">Check Your Connection..!</string>
     <string name="no_application_to_handle_this_request">No Application to handle this request..</string>
-    <string name="estimated_arrival_time_of_your_fetii">Estimated arrival time of your fetii:</string>
     <string name="push_fragment_issue"><![CDATA[pushFragment not works because isAdd=False & isReplace=False]]></string>
     <string name="session_expired">Session Expired</string>
     <string name="please_log_in_again">Please log in again.</string>
     <string name="ok">OK</string>
     <string name="new_version_available">New version available</string>
     <string name="update">UPDATE</string>
+    <string name="under_development_description">Sorry, we are doing some maintenance. Please check back soon.</string>
+    <string name="under_development">Under Development</string>
 
 
 </resources>
