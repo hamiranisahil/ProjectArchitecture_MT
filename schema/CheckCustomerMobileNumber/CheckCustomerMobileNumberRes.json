@@ -1,0 +1,8 @@
+{
+  "status": 200,
+  "message": "OTP send successfully on your registered mobile number.",
+  "data": {
+    "is_registered": false,
+    "mobile": "(968) 532-4716"
+  }
+}

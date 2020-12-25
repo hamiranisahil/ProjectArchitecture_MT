@@ -10,6 +10,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import androidx.annotation.StringDef
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.library.BuildConfig
 import com.example.library.ProgressDialog
 import com.example.library.R
 import com.example.library.dialog.CustomDialog
@@ -20,6 +21,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.dialog_for_api.*
 import okhttp3.*
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -49,25 +51,23 @@ class ApiCall {
     var jsonString: String? = null
     var requestTag: Int = 0
 
-    constructor()
-
     constructor(
-        context: Context,
-        requestParams: Array<Any>,
-        multipartModalList: ArrayList<MultipartModal>?,
-        paramsBody: Any, @WebServiceType.Type webServiceType: String,
-        retrofitResponseListener: RetrofitResponseListener
+            context: Context,
+            requestParams: Array<Any>,
+            multipartModalList: ArrayList<MultipartModal>?,
+            paramsBody: Any, @WebServiceType.Type webServiceType: String,
+            retrofitResponseListener: RetrofitResponseListener
     ) {
         MULTIPART_MODAL_LIST = multipartModalList
         ApiCall(context, requestParams, paramsBody, webServiceType, retrofitResponseListener)
     }
 
     constructor(
-        context: Context,
-        requestParams: Array<Any>,
-        paramsBody: Any, @WebServiceType.Type webServiceType: String,
-        retrofitResponseListener: RetrofitResponseListener,
-        requestTag: Int = 0
+            context: Context,
+            requestParams: Array<Any>,
+            paramsBody: Any, @WebServiceType.Type webServiceType: String,
+            retrofitResponseListener: RetrofitResponseListener,
+            requestTag: Int = 0
     ) {
         this.context = context
         this.requestParams = requestParams
@@ -80,8 +80,8 @@ class ApiCall {
         requestCode = requestParams[2] as Int
         LOADING_DIALOG_SHOW = if (requestParams.size > 3) requestParams[3] as Boolean else true
         KEYBOARD_HIDE = if (requestParams.size > 4) requestParams[4] as Boolean else true
-        rootView =
-            (context as Activity).window.decorView.rootView.findViewById(android.R.id.content)
+
+        rootView = if (context is Activity) context.window.decorView.rootView.findViewById(android.R.id.content) else null
 
         handleNormalCall()
     }
@@ -99,12 +99,12 @@ class ApiCall {
             }
             RequestType.POST -> {
                 responseCall = apiInterface.postRaw(
-                    HEADER_MAP!!,
-                    url,
-                    RequestBody.create(
-                        MediaType.parse("application/json; charset=utf-8"),
-                        jsonString!!
-                    )
+                        HEADER_MAP!!,
+                        url,
+                        RequestBody.create(
+                                MediaType.parse("application/json; charset=utf-8"),
+                                jsonString!!
+                        )
                 )
             }
             RequestType.POST_FORM_DATA -> {
@@ -115,9 +115,9 @@ class ApiCall {
                     for (multipartModal in MULTIPART_MODAL_LIST!!) {
                         val file = File(context.cacheDir, File(multipartModal.filePath).name)
                         val part = MultipartBody.Part.createFormData(
-                            multipartModal.fileKey,
-                            file.name,
-                            RequestBody.create(MediaType.parse("*/*"), file)
+                                multipartModal.fileKey,
+                                file.name,
+                                RequestBody.create(MediaType.parse("*/*"), file)
                         )
                         filesList.add(part)
                     }
@@ -126,7 +126,7 @@ class ApiCall {
                 val gsonMap = getMapFromGson(jsonString)
                 for (map in gsonMap) {
                     partMap[map.key] =
-                        RequestBody.create(MediaType.parse("text/plain"), map.value.toString())
+                            RequestBody.create(MediaType.parse("text/plain"), map.value.toString())
                 }
                 responseCall = apiInterface.postFormData(HEADER_MAP!!, url, filesList, partMap)
             }
@@ -144,15 +144,19 @@ class ApiCall {
     private val client: Retrofit
         get() {
             if (retrofit == null) {
-                val okhttpBuilder = OkHttpClient.Builder()
+                val httpLoggingInterceptor = HttpLoggingInterceptor()
+                if (BuildConfig.DEBUG) {
+                    httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+                }
+                val okhttpBuilder = OkHttpClient.Builder().addInterceptor(httpLoggingInterceptor)
                 okhttpBuilder.connectTimeout(2, TimeUnit.MINUTES)
                 okhttpBuilder.readTimeout(2, TimeUnit.MINUTES)
                 okhttpBuilder.writeTimeout(2, TimeUnit.MINUTES)
                 retrofit = Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .client(okhttpBuilder.build())
-                    .build()
+                        .baseUrl(BASE_URL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .client(okhttpBuilder.build())
+                        .build()
             }
             return retrofit!!
         }
@@ -160,7 +164,7 @@ class ApiCall {
 
     private fun call() {
         if (INTERNET_DIALOG_SHOW && context.isOnline()) {
-            if(API_LOG_ENABLE) {
+            if (API_LOG_ENABLE) {
                 printLog(
                         "ApiCall - Request",
                         "Headers: ${responseCall?.request()?.headers()} Url: ${
@@ -170,7 +174,7 @@ class ApiCall {
                 printLog("ApiCall - Request", "ParamsBody: $jsonString")
             }
 
-            if (KEYBOARD_HIDE) {
+            if (rootView != null && KEYBOARD_HIDE) {
                 context.hideKeyboard()
             }
             // if you want to show dialog over bottomsheet or other custom dialog screen.
@@ -199,26 +203,10 @@ class ApiCall {
                 responseCall!!.clone().enqueue(object : Callback<ResponseBody> {
 
                     override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
+                            call: Call<ResponseBody>,
+                            response: Response<ResponseBody>
                     ) {
                         try {
-
-                            // This is for cancel api response
-//                            printLog(
-//                                "ApiCall - Response",
-//                                "Cancel Number ${call.request().tag()}"
-//                            )
-//                            if (requestTag != 0 && call.request()
-//                                    .tag() != null && requestTag != (call.request()
-//                                    .tag() as Int)
-//                            ) {
-//                                printLog(
-//                                    "ApiCall - Response",
-//                                    "Cancel Number $requestTag"
-//                                )
-//                                return
-//                            }
                             when (response.code()) {
                                 STATUS_200 -> {
 
@@ -235,7 +223,7 @@ class ApiCall {
                                     } else {
                                         bodyString = response.body()?.string()!!
                                     }
-                                    if(API_LOG_ENABLE) {
+                                    if (API_LOG_ENABLE) {
                                         printLog(
                                                 "ApiCall - Response",
                                                 "ParamsBody: $bodyString"
@@ -251,21 +239,21 @@ class ApiCall {
 
                                     if (!HANDLE_STATUS) {
                                         retrofitResponseListener.onSuccess(
-                                            "$FILE_DOWNLOAD_PATH/$paramsBody", requestCode
+                                                "$FILE_DOWNLOAD_PATH/$paramsBody", requestCode
                                         )
                                         return
                                     }
 
                                     val commonRes =
-                                        Gson().fromJson(bodyString, CommonRes::class.java)
+                                            Gson().fromJson(bodyString, CommonRes::class.java)
                                     if (commonRes == null) {
                                         if (webServiceType == WebServiceType.WS_FILE_DOWNLOAD || webServiceType == WebServiceType.WS_FILE_DOWNLOAD_WITH_MESSAGE) {
                                             ApiFileDownloader(
-                                                context,
-                                                responseBody!!,
-                                                paramsBody as String,
-                                                requestCode,
-                                                retrofitResponseListener
+                                                    context,
+                                                    responseBody!!,
+                                                    paramsBody as String,
+                                                    requestCode,
+                                                    retrofitResponseListener
                                             )
                                             if (webServiceType == WebServiceType.WS_FILE_DOWNLOAD_WITH_MESSAGE) {
                                                 context.showToast(context.getString(R.string.file_download_successfully))
@@ -275,36 +263,36 @@ class ApiCall {
                                     }
 
                                     HandleStatusCode(
-                                        context,
-                                        rootView!!,
-                                        bodyString,
-                                        commonRes!!,
-                                        requestCode,
-                                        webServiceType,
-                                        retrofitResponseListener
+                                            context,
+                                            rootView!!,
+                                            bodyString,
+                                            commonRes!!,
+                                            requestCode,
+                                            webServiceType,
+                                            retrofitResponseListener
                                     )
                                 }
                                 STATUS_401 -> {
                                     if (SHOW_SESSION_EXPIRE_DIALOG) {
                                         context.showDialogWithOneButton(
-                                            context.getString(R.string.session_expired),
-                                            context.getString(R.string.please_log_in_again),
-                                            context.getString(R.string.ok),
-                                            object : AlertButtonClickListener {
-                                                override fun onAlertClick(
-                                                    dialog: DialogInterface,
-                                                    which: Int
-                                                ) {
-                                                    dialog.dismiss()
-                                                    apiBroadcast(API_BROADCAST_STATUS_CODE_401)
-                                                }
-                                            })
+                                                context.getString(R.string.session_expired),
+                                                context.getString(R.string.please_log_in_again),
+                                                context.getString(R.string.ok),
+                                                object : AlertButtonClickListener {
+                                                    override fun onAlertClick(
+                                                            dialog: DialogInterface,
+                                                            which: Int
+                                                    ) {
+                                                        dialog.dismiss()
+                                                        apiBroadcast(API_BROADCAST_STATUS_CODE_401)
+                                                    }
+                                                })
 
                                     } else {
                                         context.showToast(response.message())
                                         retrofitResponseListener.onSuccess(
-                                            response.body()?.string(),
-                                            requestCode
+                                                response.body()?.string(),
+                                                requestCode
                                         )
                                         apiBroadcast(API_BROADCAST_STATUS_CODE_401)
                                     }
@@ -312,56 +300,56 @@ class ApiCall {
                                 STATUS_426 -> {
                                     if (SHOW_APP_UPDATE_DIALOG) {
                                         val commonRes = Gson().fromJson(
-                                            response.errorBody()?.string(),
-                                            CommonRes::class.java
+                                                response.errorBody()?.string(),
+                                                CommonRes::class.java
                                         )
                                         context.showDialogWithOneButton(
-                                            context.getString(R.string.new_version_available),
-                                            commonRes?.message,
-                                            context.getString(R.string.update),
-                                            object : AlertButtonClickListener {
-                                                override fun onAlertClick(
-                                                    dialog: DialogInterface,
-                                                    which: Int
-                                                ) {
-                                                    IntentUtility(context).launchPlayStoreWithPackageName(
-                                                        context.packageName
-                                                    )
-                                                    apiBroadcast(API_BROADCAST_STATUS_CODE_426)
-                                                }
-                                            }, false
+                                                context.getString(R.string.new_version_available),
+                                                commonRes?.message,
+                                                context.getString(R.string.update),
+                                                object : AlertButtonClickListener {
+                                                    override fun onAlertClick(
+                                                            dialog: DialogInterface,
+                                                            which: Int
+                                                    ) {
+                                                        IntentUtility(context).launchPlayStoreWithPackageName(
+                                                                context.packageName
+                                                        )
+                                                        apiBroadcast(API_BROADCAST_STATUS_CODE_426)
+                                                    }
+                                                }, false
                                         )
 
                                     } else {
                                         context.showToast(response.message())
                                         retrofitResponseListener.onSuccess(
-                                            response.body()?.string(),
-                                            requestCode
+                                                response.body()?.string(),
+                                                requestCode
                                         )
                                         apiBroadcast(API_BROADCAST_STATUS_CODE_426)
                                     }
                                 }
                                 STATUS_503 -> {
                                     context.showDialogWithOneButton(
-                                        context.getString(R.string.under_development),
-                                        context.getString(R.string.under_development_description),
-                                        context.getString(R.string.ok),
-                                        object : AlertButtonClickListener {
-                                            override fun onAlertClick(
-                                                dialog: DialogInterface,
-                                                which: Int
-                                            ) {
-                                                dialog.dismiss()
-                                            }
+                                            context.getString(R.string.under_development),
+                                            context.getString(R.string.under_development_description),
+                                            context.getString(R.string.ok),
+                                            object : AlertButtonClickListener {
+                                                override fun onAlertClick(
+                                                        dialog: DialogInterface,
+                                                        which: Int
+                                                ) {
+                                                    dialog.dismiss()
+                                                }
 
-                                        },
-                                        false
+                                            },
+                                            false
                                     )
                                 }
                                 else -> {
                                     val responseBody = response.body()
                                     context.showToast(response.message())
-                                    if(API_LOG_ENABLE) {
+                                    if (API_LOG_ENABLE) {
                                         printLog(
                                                 "ApiCall - Response",
                                                 "ParamsBody: ${Gson().toJson(responseBody)}"
@@ -369,8 +357,8 @@ class ApiCall {
                                     }
                                     if (responseBody != null) {
                                         retrofitResponseListener.onSuccess(
-                                            responseBody.string(),
-                                            requestCode
+                                                responseBody.string(),
+                                                requestCode
                                         )
                                     }
                                 }
@@ -386,7 +374,7 @@ class ApiCall {
                         } catch (e: Exception) {
                             if (e.message != null && e.message!!.isNotEmpty()) {
 //                                context.showToast(e.message)
-                                if(API_LOG_ENABLE) {
+                                if (API_LOG_ENABLE) {
                                     printLog("ApiCall - Response Not Parse", "${e.message}")
                                 }
                             }
@@ -416,7 +404,7 @@ class ApiCall {
                             handleNoInternetTimoutDialog(context.getString(R.string.timeout))
                         }
                         if (call.isCanceled) {
-                            if(API_LOG_ENABLE) {
+                            if (API_LOG_ENABLE) {
                                 printLog(TAG, t.message!!)
                             }
                         } else {
@@ -449,7 +437,7 @@ class ApiCall {
 
     fun apiBroadcast(statusCode: String) {
         LocalBroadcastManager.getInstance(context)
-            .sendBroadcast(Intent(API_BROADCAST).putExtra(API_BROADCAST_DATA, statusCode))
+                .sendBroadcast(Intent(API_BROADCAST).putExtra(API_BROADCAST_DATA, statusCode))
     }
 
     fun handleNoInternetTimoutDialog(type: String) {
@@ -461,10 +449,10 @@ class ApiCall {
 //        }
 
         val dialog = CustomDialog(context, R.style.full_screen_dialog).showDialog(
-            R.layout.dialog_for_api,
-            false,
-            MATCH_PARENT,
-            MATCH_PARENT
+                R.layout.dialog_for_api,
+                false,
+                MATCH_PARENT,
+                MATCH_PARENT
         )
 
         dialog.tvApiDialog.text = type
@@ -514,25 +502,25 @@ class ApiCall {
 
         @POST
         fun postRaw(
-            @HeaderMap mapHeader: Map<String, Any>,
-            @Url url: String,
-            @Body requestBody: RequestBody
+                @HeaderMap mapHeader: Map<String, Any>,
+                @Url url: String,
+                @Body requestBody: RequestBody
         ): Call<ResponseBody>
 
         @Multipart
         @POST
         fun postFormData(
-            @HeaderMap mapHeader: Map<String, Any>,
-            @Url url: String,
-            @Part filesList: List<MultipartBody.Part>,
-            @PartMap() partMap: Map<String, RequestBody>
+                @HeaderMap mapHeader: Map<String, Any>,
+                @Url url: String,
+                @Part filesList: List<MultipartBody.Part>,
+                @PartMap() partMap: Map<String, RequestBody>
         ): Call<ResponseBody>
 
         @GET
         fun get(
-            @HeaderMap mapHeader: Map<String, Any>,
-            @Url url: String,
-            @QueryMap queryMap: Map<String, Any>
+                @HeaderMap mapHeader: Map<String, Any>,
+                @Url url: String,
+                @QueryMap queryMap: Map<String, Any>
         ): Call<ResponseBody>
 
     }
@@ -548,10 +536,10 @@ class ApiCall {
     class WebServiceType {
 
         @StringDef(
-            WS_SIMPLE,
-            WS_SIMPLE_WITH_MESSAGE,
-            WS_FILE_DOWNLOAD,
-            WS_FILE_DOWNLOAD_WITH_MESSAGE
+                WS_SIMPLE,
+                WS_SIMPLE_WITH_MESSAGE,
+                WS_FILE_DOWNLOAD,
+                WS_FILE_DOWNLOAD_WITH_MESSAGE
         )
         annotation class Type
 
@@ -582,8 +570,11 @@ class ApiCall {
         var FILE_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().path + "/"
         var SHOW_SESSION_EXPIRE_DIALOG = true
         var SHOW_APP_UPDATE_DIALOG = true
-
+        var API_CALL_LOADING_SCREEN_TYPE: ApiCallLoadingScreenType = ApiCallLoadingScreenType.FULL_SCREEN_DIALOG
     }
 
+    enum class ApiCallLoadingScreenType {
+        INNER_SCREEN, FULL_SCREEN_DIALOG
+    }
 
 }
