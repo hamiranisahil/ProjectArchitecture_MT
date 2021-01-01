@@ -16,6 +16,7 @@ import com.google.gson.Gson
 import com.google.gson.TypeAdapter
 import com.google.gson.reflect.TypeToken
 import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.dialog_for_api.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -176,6 +177,10 @@ class RXApiCall {
         }
     }
 
+    fun storeApiObserver(apiRequestCode: Int, disposable: Disposable){
+        MAINTAIN_API_CALLS[apiRequestCode] = disposable
+    }
+
     private fun handleNormalCall() {
 
     }
@@ -303,11 +308,17 @@ class RXApiCall {
         var KEYBOARD_HIDE = true
         var HANDLE_STATUS = true
         var MULTIPART_MODAL_LIST: ArrayList<MultipartModal>? = null
+        private var MAINTAIN_API_CALLS = HashMap<Int, Disposable>()
         var FILE_DOWNLOAD_PATH = Environment.getExternalStorageDirectory().path + "/"
         var SHOW_SESSION_EXPIRE_DIALOG = true
         var SHOW_APP_UPDATE_DIALOG = true
         var API_CALL_LOADING_SCREEN_TYPE: ApiCallLoadingScreenType =
             ApiCallLoadingScreenType.FULL_SCREEN_DIALOG
+
+        fun removeApiObserver(apiRequestCode: Int){
+            MAINTAIN_API_CALLS[apiRequestCode]?.dispose()
+            MAINTAIN_API_CALLS.remove(apiRequestCode)
+        }
     }
 
     enum class ApiCallLoadingScreenType {
