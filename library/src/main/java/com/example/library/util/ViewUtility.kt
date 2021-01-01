@@ -16,17 +16,20 @@ fun Activity.getViewDistance(view: View): Int {
     return displayMetrics.heightPixels - viewSize[1]
 }
 
-fun enableDisableViewGroup(viewGroup: ViewGroup?, isEnabled: Boolean) {
-    if (viewGroup != null) {
-        val childCount = viewGroup.childCount
-        for (i in 0 until childCount) {
-            val view = viewGroup.getChildAt(i)
-            view.isEnabled = isEnabled
-            if (view is ViewGroup) {
-                enableDisableViewGroup(view, isEnabled)
-            }
+
+fun ViewGroup.enableDisableViewGroup(isEnabled: Boolean) {
+    val childCount = this.childCount
+    for (i in 0 until childCount) {
+        val view = this.getChildAt(i)
+        view.isEnabled = isEnabled
+        if (view is ViewGroup) {
+            view.enableDisableViewGroup(isEnabled)
         }
     }
+}
+
+fun View.enableDisableView(isEnabled: Boolean) {
+    this.isEnabled = isEnabled
 }
 
 fun getScreenWidth(context: Context): Int {

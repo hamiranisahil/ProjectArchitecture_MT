@@ -12,6 +12,9 @@ class CustomDialog(
 ) {
 
     private var themeResId: Int = -1
+    private var x = 0
+    private var y = 0
+    private var gravity: Int = 0
 
     constructor(
         context: Context,
@@ -22,10 +25,40 @@ class CustomDialog(
     }
 
     fun showDialog(view: View, isCancelable: Boolean, width: Int = ViewGroup.LayoutParams.MATCH_PARENT, height: Int = WRAP_CONTENT): Dialog {
-        return this.showDialog(-1, null, isCancelable, width, height)
+        return this.showDialog(-1, view, isCancelable, width, height)
     }
 
     fun showDialog(layoutId: Int, isCancelable: Boolean, width: Int = ViewGroup.LayoutParams.MATCH_PARENT, height: Int = WRAP_CONTENT): Dialog {
+        return this.showDialog(layoutId, null, isCancelable, width, height)
+    }
+
+    fun showDialog(
+        view: View,
+        isCancelable: Boolean,
+        width: Int = ViewGroup.LayoutParams.MATCH_PARENT,
+        height: Int = WRAP_CONTENT,
+        x: Int = 0,
+        y: Int = 0,
+        gravity: Int = 0
+    ): Dialog {
+        this.x = x
+        this.y = y
+        this.gravity = gravity
+        return this.showDialog(-1, view, isCancelable, width, height)
+    }
+
+    fun showDialog(
+        layoutId: Int,
+        isCancelable: Boolean,
+        width: Int = ViewGroup.LayoutParams.MATCH_PARENT,
+        height: Int = WRAP_CONTENT,
+        x: Int = 0,
+        y: Int = 0,
+        gravity: Int = 0
+    ): Dialog {
+        this.x = x
+        this.y = y
+        this.gravity = gravity
         return this.showDialog(layoutId, null, isCancelable, width, height)
     }
 
@@ -43,6 +76,19 @@ class CustomDialog(
         } else {
             dialog.setContentView(layoutId)
         }
+
+        // set particular location
+        val wmlp = dialog.window!!.attributes
+        if (gravity != 0) {
+            wmlp.gravity = gravity
+        }
+        if (x != 0) {
+            wmlp.x = x
+        }
+        if (y != 0) {
+            wmlp.y = y
+        }
+
         dialog.setCancelable(isCancelable)
         dialog.show()
 
