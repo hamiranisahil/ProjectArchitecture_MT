@@ -112,7 +112,7 @@ class FragmentUtility(val context: Context) {
     }
 
     interface FragmnetBackListener {
-        fun onBackFragment()
+        fun onBackFragment(backFragment: Fragment? = null)
     }
 
     fun pushChildFragment(

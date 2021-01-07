@@ -3,7 +3,7 @@ package com.example.library.util
 import android.content.Context
 
 
-class SharedPreferenceUtility(val context: Context, val sharedPreferenceName: String? = null) {
+class NewSharedPreferenceUtility(val context: Context, val sharedPreferenceName: String? = null) {
 
     init {
         if(sharedPreferenceName!=null){
