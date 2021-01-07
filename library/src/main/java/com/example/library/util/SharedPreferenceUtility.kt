@@ -3,19 +3,13 @@ package com.example.library.util
 import android.content.Context
 
 
-class SharedPreferenceUtility(val context: Context, val sharedPreferenceName: String? = null) {
-
-    init {
-        if(sharedPreferenceName!=null){
-            SHARED_PREFERENCE_NAME = sharedPreferenceName
-        }
-    }
+class SharedPreferenceUtility {
 
     companion object {
         var SHARED_PREFERENCE_NAME = ""
     }
 
-    fun setData(key: String, value: Any) {
+    fun setData(context: Context, key: String, value: Any) {
         when (value) {
             is String -> context.getSharedPreferences(SHARED_PREFERENCE_NAME, 0).edit().putString(key, value).apply()
             is Int -> context.getSharedPreferences(SHARED_PREFERENCE_NAME, 0).edit().putInt(key, value).apply()
@@ -27,7 +21,7 @@ class SharedPreferenceUtility(val context: Context, val sharedPreferenceName: St
 
     }
 
-    fun getData(key: String, defValue: Any): Any {
+    fun getData(context: Context, key: String, defValue: Any): Any {
         return when (defValue) {
             is Int -> context.getSharedPreferences(SHARED_PREFERENCE_NAME, 0).getInt(key, defValue)
             is Long -> context.getSharedPreferences(SHARED_PREFERENCE_NAME, 0).getLong(key, defValue)
