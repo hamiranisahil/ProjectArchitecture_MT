@@ -18,10 +18,7 @@ import com.google.gson.reflect.TypeToken
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.dialog_for_api.*
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.RequestBody
+import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -177,6 +174,67 @@ class RXApiCall {
         }
     }
 
+    fun callWithResponse(): Observable<ResponseBody>? {
+        if (INTERNET_DIALOG_SHOW && context.isOnline()) {
+            jsonString = Gson().toJson(paramsBody)
+
+            when (method) {
+                RequestType.GET -> {
+                    if (paramsBody is String) {
+                        return apiInterface.getResponse(
+                            HEADER_MAP!!,
+                            url + paramsBody,
+                            getMapFromGson(null)
+                        )
+                    } else {
+                        return apiInterface.getResponse(HEADER_MAP!!, url, getMapFromGson(jsonString))
+                    }
+                }
+                RequestType.POST -> {
+                    return apiInterface.postRawResponse(
+                        HEADER_MAP!!,
+                        url,
+                        RequestBody.create(
+                            MediaType.parse("application/json; charset=utf-8"),
+                            jsonString!!
+                        )
+                    )
+                }
+                RequestType.POST_FORM_DATA -> {
+                    val filesList = ArrayList<MultipartBody.Part>()
+                    val partMap = HashMap<String, RequestBody>()
+
+                    if (MULTIPART_MODAL_LIST != null) {
+                        for (multipartModal in MULTIPART_MODAL_LIST!!) {
+                            val file = File(context.cacheDir, File(multipartModal.filePath).name)
+                            val part = MultipartBody.Part.createFormData(
+                                multipartModal.fileKey,
+                                file.name,
+                                RequestBody.create(MediaType.parse("*/*"), file)
+                            )
+                            filesList.add(part)
+                        }
+                    }
+
+                    val gsonMap = getMapFromGson(jsonString)
+                    for (map in gsonMap) {
+                        partMap[map.key] =
+                            RequestBody.create(MediaType.parse("text/plain"), map.value.toString())
+                    }
+                    return apiInterface.postFormDataResponse(HEADER_MAP!!, url, filesList, partMap)
+                }
+                else -> {
+                    return null
+                }
+            }
+
+
+        } else {
+            handleNoInternetTimoutDialog((context.getString(R.string.no_internet)))
+            return null
+        }
+    }
+
     fun storeApiObserver(apiRequestCode: Int, disposable: Disposable){
         MAINTAIN_API_CALLS[apiRequestCode] = disposable
     }
@@ -260,6 +318,29 @@ class RXApiCall {
             @QueryMap queryMap: Map<String, Any>
         ): Observable<CommonRes>
 
+
+        @POST
+        fun  postRawResponse(
+            @HeaderMap mapHeader: Map<String, Any>,
+            @Url url: String,
+            @Body requestBody: RequestBody
+        ): Observable<ResponseBody>
+
+        @Multipart
+        @POST
+        fun postFormDataResponse(
+            @HeaderMap mapHeader: Map<String, Any>,
+            @Url url: String,
+            @Part filesList: List<MultipartBody.Part>,
+            @PartMap() partMap: Map<String, RequestBody>
+        ): Observable<ResponseBody>
+
+        @GET
+        fun getResponse(
+            @HeaderMap mapHeader: Map<String, Any>,
+            @Url url: String,
+            @QueryMap queryMap: Map<String, Any>
+        ): Observable<ResponseBody>
     }
 
     class RequestType {
