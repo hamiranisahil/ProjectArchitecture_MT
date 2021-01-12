@@ -197,4 +197,8 @@ class FragmentUtility(val context: Context) {
         parentFragment.childFragmentManager.popBackStack(name, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
+    fun removeFragment(parentFragment: Fragment, childFragment: Fragment) {
+        parentFragment.childFragmentManager.beginTransaction().remove(childFragment).commit()
+    }
+
 }
