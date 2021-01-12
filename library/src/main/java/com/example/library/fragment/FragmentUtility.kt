@@ -186,15 +186,15 @@ class FragmentUtility(val context: Context) {
             .commitAllowingStateLoss()
     }
 
-    fun popChildFragment(parentFragment: Fragment) {
+    fun popChildFragment(parentFragment: Fragment, name: String? = null) {
 //        try {
-        parentFragment.childFragmentManager.popBackStackImmediate()
+        parentFragment.childFragmentManager.popBackStackImmediate(name, FragmentManager.POP_BACK_STACK_INCLUSIVE)
 //        } catch (ignored: IllegalStateException) {
 //        }
     }
 
-    fun popChildFragmentAsync(parentFragment: Fragment) {
-        parentFragment.childFragmentManager.popBackStack()
+    fun popChildFragmentAsync(parentFragment: Fragment, name: String? = null) {
+        parentFragment.childFragmentManager.popBackStack(name, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
 }
