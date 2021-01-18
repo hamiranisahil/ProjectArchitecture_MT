@@ -24,6 +24,12 @@ class PermissionManagerUtility {
         var mPermissionListener: PermissionListener? = null
     }
 
+    constructor(){}
+
+    constructor(context: Context){
+        mContext = context
+    }
+
     fun requestPermission(
         context: Context,
         isCompulsory: Boolean,
