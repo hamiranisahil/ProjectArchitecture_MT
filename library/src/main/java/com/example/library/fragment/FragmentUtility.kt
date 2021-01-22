@@ -186,6 +186,20 @@ class FragmentUtility(val context: Context) {
             .commitAllowingStateLoss()
     }
 
+    fun popChildFragment(parentFragment: Fragment) {
+//        try {
+        parentFragment.childFragmentManager.popBackStack()
+//        } catch (ignored: IllegalStateException) {
+//        }
+    }
+
+    fun popChildFragmentImmediate(parentFragment: Fragment) {
+//        try {
+        parentFragment.childFragmentManager.popBackStackImmediate()
+//        } catch (ignored: IllegalStateException) {
+//        }
+    }
+
     fun popChildFragment(parentFragment: Fragment, name: String? = null) {
 //        try {
         parentFragment.childFragmentManager.popBackStackImmediate(name, FragmentManager.POP_BACK_STACK_INCLUSIVE)
@@ -193,7 +207,7 @@ class FragmentUtility(val context: Context) {
 //        }
     }
 
-    fun popChildFragmentAsync(parentFragment: Fragment, name: String? = null) {
+    fun popChildFragmentImmediate(parentFragment: Fragment, name: String? = null) {
         parentFragment.childFragmentManager.popBackStack(name, FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
