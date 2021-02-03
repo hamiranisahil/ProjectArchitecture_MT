@@ -13,8 +13,9 @@ import com.example.library.util.AlertTwoButtonClickListener
 import com.example.library.util.showDialogWithTwoButton
 
 class PermissionManagerUtility {
-    var isShown = false
+
     companion object {
+        var isShown = false
         var mPermissionRequestCode = -1
         var mContext: Context? = null
         val grantPermissions = ArrayList<String>()
@@ -37,6 +38,7 @@ class PermissionManagerUtility {
         permissionListener: PermissionListener,
         vararg permissions: String
     ) {
+        isShown = false
         deniedPermissions.clear()
         mPermissions.clear()
         grantPermissions.clear()
@@ -117,7 +119,7 @@ class PermissionManagerUtility {
         }
     }
 
-    fun openSettings(mPermissionRequestCode: Int) {
+    fun openSettings(activity:Activity, mPermissionRequestCode: Int) {
         val intent = Intent()
         intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
         intent.addCategory(Intent.CATEGORY_DEFAULT)
@@ -125,7 +127,7 @@ class PermissionManagerUtility {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
         intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
-        (mContext as Activity).startActivityForResult(intent, mPermissionRequestCode)
+        activity.startActivityForResult(intent, mPermissionRequestCode)
     }
 
     fun checkReject() {
