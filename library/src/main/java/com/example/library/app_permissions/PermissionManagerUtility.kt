@@ -119,12 +119,11 @@ class PermissionManagerUtility {
         }
     }
 
-    fun openSettings(activity:Activity, mPermissionRequestCode: Int) {
+    fun openSettings(activity: Activity, mPermissionRequestCode: Int) {
         val intent = Intent()
         intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
         intent.addCategory(Intent.CATEGORY_DEFAULT)
-        intent.data = Uri.parse("package:" + mContext?.packageName)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.data = Uri.parse("package:" + PermissionManagerUtility.mContext?.packageName)
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
         intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
         activity.startActivityForResult(intent, mPermissionRequestCode)
