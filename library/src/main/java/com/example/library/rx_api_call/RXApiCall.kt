@@ -51,8 +51,8 @@ class RXApiCall {
         multipartModalList: ArrayList<MultipartModal>?,
         paramsBody: Any, @WebServiceType.Type webServiceType: String
     ) {
-        MULTIPART_MODAL_LIST = multipartModalList
         RXApiCall(context, requestParams, paramsBody, webServiceType)
+        MULTIPART_MODAL_LIST = multipartModalList
     }
 
     constructor(
