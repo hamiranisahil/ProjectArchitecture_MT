@@ -48,16 +48,6 @@ class RXApiCall {
     constructor(
         context: Context,
         requestParams: Array<Any>,
-        multipartModalList: ArrayList<MultipartModal>?,
-        paramsBody: Any, @WebServiceType.Type webServiceType: String
-    ) {
-        RXApiCall(context, requestParams, paramsBody, webServiceType)
-        MULTIPART_MODAL_LIST = multipartModalList
-    }
-
-    constructor(
-        context: Context,
-        requestParams: Array<Any>,
         paramsBody: Any,
         @WebServiceType.Type webServiceType: String,
         requestTag: Int = 0
@@ -77,6 +67,10 @@ class RXApiCall {
             if (context is Activity) context.window.decorView.rootView.findViewById(android.R.id.content) else null
 
         handleNormalCall()
+    }
+
+    fun setMultiPartList(multipartModalList: ArrayList<MultipartModal>?,){
+        MULTIPART_MODAL_LIST = multipartModalList
     }
 
     private val client: Retrofit
