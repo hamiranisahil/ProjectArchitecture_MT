@@ -5,10 +5,15 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 
+const val chunkSize = 2048
 
 fun printLog(tag: String, message: String?) {
     message?.let {
-        Log.d(tag, it)
+        var i = 0
+        while (i < it.length) {
+            Log.d(tag, it.substring(i, Math.min(it.length, i + chunkSize)))
+            i += chunkSize
+        }
     }
 }
 

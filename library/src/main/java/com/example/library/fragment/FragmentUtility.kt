@@ -54,6 +54,8 @@ class FragmentUtility(val context: Context) {
             }
         }
 
+        beginTransaction = fragmentManager.beginTransaction()
+
         when {
             isAdd -> {
                 beginTransaction?.add(containerId, fragment, fragment.javaClass.simpleName)
