@@ -33,6 +33,7 @@ class DateUtility {
         const val DD_MM_YYYY_HH_MM_SS_DASH_DATE = "dd-MM-yyyy HH:mm:ss"
         const val DD_MM_YYYY_HH_MM_A_SLASH_DATE = "dd/MMM/yyyy HH:mm a"
         const val DD_MM_YYYY_HH_MM_A_DASH_DATE = "dd-MM-yyyy hh:mm a"
+        val MMM_DD_YYYY_HH_MM_A_DASH_DATE = "${DateFormat.MMM_DD_YYYY} ${TimeFormat.hh_mm_a}"
 
     }
     // Date Pattern
@@ -47,9 +48,11 @@ class DateUtility {
         const val MMMM_dd_yyyy_SLASH = "MMMM/dd/yyyy"
         const val MM_dd_yy_SLASH = "MM/dd/yy"
         const val EEE_MMM_dd = "EEE, MMM, dd"
+        const val MMMM_DD = "MMMM dd"
         const val EEEE_MMM_dd = "EEEE, MMM. dd"
         const val MMM_dd_YYYY = "MMM. dd, yyy"
         const val MM_DD_YYYY_SLASH_h_mm_a = "MM/dd/yy, h:mm a"
+        val MMM_DD = "MMM dd"
     }
 
     // Time Pattern
@@ -242,6 +245,48 @@ class DateUtility {
         calendar.time = date
         calendar.add(Calendar.MINUTE, minutes)
         return calendar.time
+    }
+
+
+    fun getTimeDifferenceInHour(currentDate: Date, futureDate: Date): Int {
+
+        val calendar = Calendar.getInstance()
+        calendar.time = Date()
+
+        val calendarFuture = Calendar.getInstance()
+        calendarFuture.time = futureDate
+
+        val difference: Long = calendarFuture.time.time - calendar.time.time
+//        var days = (difference / (1000 * 60 * 60 * 24)).toInt()
+//        var hours = ((difference - 1000 * 60 * 60 * 24 * days) / (1000 * 60 * 60)).toInt()
+//        var min = (difference - 1000 * 60 * 60 * 24 * days - 1000 * 60 * 60 * hours).toInt() / (1000 * 60)
+        val diffDays: Long = difference / (24 * 60 * 60 * 1000)
+        val diffSeconds: Long = difference / 1000 % 60
+        val diffMinutes: Long = difference / (60 * 1000) % 60
+        var diffHours: Long = difference / (60 * 60 * 1000) % 24
+        printLog("Hour", "hours up :: $diffHours")
+        printLog("Hour", "futureDate/ride date :: ${futureDate} currentDate ${currentDate}")
+        printLog("Hour", "hours down :: $diffHours")
+        return diffHours.toInt()
+
+    }
+
+    fun getTimeDifferenceInMinutes(currentDate: Date, futureDate: Date): Int {
+        val difference: Long = futureDate.time - currentDate.time
+//        var days = (difference / (1000 * 60 * 60 * 24)).toInt()
+//        var hours = ((difference - 1000 * 60 * 60 * 24 * days) / (1000 * 60 * 60)).toInt()
+//        var min = (difference - 1000 * 60 * 60 * 24 * days - 1000 * 60 * 60 * hours).toInt() / (1000 * 60)
+
+
+        val diffDays: Long = difference / (24 * 60 * 60 * 1000)
+        val diffSeconds: Long = difference / 1000 % 60
+        var diffMinutes: Long = difference / (60 * 1000) % 60
+        var diffHours: Long = difference / (60 * 60 * 1000) % 24
+        printLog("Minutes", "Minutes up :: $diffMinutes")
+//        diffMinutes = if (diffMinutes < 0) -diffMinutes else diffMinutes
+        printLog("Minutes", "Minutes down :: $diffMinutes")
+        printLog("Minutes", "futureDate/ride date :: ${futureDate} currentDate ${currentDate}")
+        return diffMinutes.toInt()
     }
 
 //    fun convertTimezone(date: Date, timeZone: String): String {

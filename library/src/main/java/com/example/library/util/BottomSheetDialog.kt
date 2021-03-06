@@ -2,13 +2,16 @@ package com.example.library.util
 
 import android.content.Context
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import com.example.library.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 fun Context.showBottomSheetDialog(
     layoutView: View,
-    isCancelable: Boolean = false
+    isCancelable: Boolean = false,
+    isRemoveBackgroundDim: Boolean = true
 ): BottomSheetDialog {
     val dialog = BottomSheetDialog(this, R.style.bottomSheet)
     dialog.setContentView(layoutView)
@@ -29,6 +32,13 @@ fun Context.showBottomSheetDialog(
         }
     })*/
     dialog.show()
+    val window: Window? = dialog.window
+    window?.findViewById<View>(R.id.design_bottom_sheet)?.setBackgroundResource(android.R.color.transparent);
+    window?.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+        WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL)
+    if(isRemoveBackgroundDim) {
+        window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+    }
     return dialog
 }
 

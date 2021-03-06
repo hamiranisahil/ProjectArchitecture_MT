@@ -217,4 +217,10 @@ class FragmentUtility(val context: Context) {
         parentFragment.childFragmentManager.beginTransaction().remove(childFragment).commit()
     }
 
+    fun clearChildFragments(parentFragment: Fragment){
+        for (fragment in parentFragment.childFragmentManager.fragments) {
+            parentFragment.childFragmentManager.beginTransaction().remove(fragment).commit();
+        }
+    }
+
 }

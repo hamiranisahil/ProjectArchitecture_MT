@@ -16,7 +16,7 @@ class IntentUtility(val context: Context) {
         }
     }
 
-    fun openDialer(context: Context, number: String) {
+    fun openDialer(number: String) {
         try {
             val intent = Intent(Intent.ACTION_DIAL)
             intent.data = Uri.parse("tel:$number")

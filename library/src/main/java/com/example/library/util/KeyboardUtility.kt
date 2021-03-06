@@ -33,6 +33,17 @@ fun Context.hideKeyboard(): Boolean {
     return keyboardClosed
 }
 
+fun Activity.hideImplicitKeyboard() {
+    // Check if no view has focus:
+    try {
+        val imm: InputMethodManager? =
+            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager?
+        imm?.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+}
+
 fun Context.eventOpenClose(
     view: View, onKeyboardChangeEventListener: OnKeyboardChangeEventListener?
 ) {

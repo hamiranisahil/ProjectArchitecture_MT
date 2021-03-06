@@ -30,7 +30,7 @@ class NotificationUtility(val context: Context) {
     }
 
 
-    fun simpleNotification(title: String?, message: String?, icon: Int) {
+    fun simpleNotification(title: String?, message: String?, icon: Int): Notification? {
         createNotificationChannel("1", "Fetii Customer Notification", Priority.HIGH_PRIORITY)
         val builder = NotificationCompat.Builder(context, "1")
         builder.setContentTitle(title)
@@ -42,6 +42,7 @@ class NotificationUtility(val context: Context) {
 //        builder.setContentIntent(pendingIntent)
         val notification = builder.build()
         getNotificationManager().notify(NotificationID.id, notification)
+        return notification
     }
 
     fun bigTextNotification(
@@ -215,6 +216,9 @@ class NotificationUtility(val context: Context) {
         getNotificationManager().cancelAll()
     }
 
+    fun cancel(notificationId: Int) {
+        getNotificationManager().cancel(notificationId)
+    }
 
     //    Requires Android Oreo for Notification
     fun createNotificationChannel(channelId: String, channelName: String, priority: Priority) {
