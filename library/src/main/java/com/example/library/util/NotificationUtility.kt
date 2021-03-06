@@ -30,8 +30,11 @@ class NotificationUtility(val context: Context) {
     }
 
 
-    fun simpleNotification(title: String?, message: String?, icon: Int): Notification? {
-        createNotificationChannel("1", "Fetii Customer Notification", Priority.HIGH_PRIORITY)
+    fun simpleNotification(channelId: String,
+                           channelName: String,
+                           title: String?, message: String?, icon: Int): Notification? {
+
+        createNotificationChannel(channelId, channelName, Priority.HIGH_PRIORITY)
         val builder = NotificationCompat.Builder(context, "1")
         builder.setContentTitle(title)
         builder.setContentText(message)
@@ -46,13 +49,16 @@ class NotificationUtility(val context: Context) {
     }
 
     fun bigTextNotification(
+        channelId: String,
+        channelName: String,
         title: String,
         message: String,
         bigText: String,
         icon: Int,
-        intent: Intent?
+        intent: Intent?,
+        requestCode: Int = 0
     ) {
-        createNotificationChannel("1", "Fetii Customer Notification", Priority.HIGH_PRIORITY)
+        createNotificationChannel(channelId, channelName, Priority.HIGH_PRIORITY)
         val builder = NotificationCompat.Builder(context, "1")
         builder.setContentTitle(title)
         builder.setContentText(message)
@@ -263,6 +269,54 @@ class NotificationUtility(val context: Context) {
                 }
             }
         }
+    }
+
+    fun customContentAndBigNotification(
+        layoutContent: Int,
+        layoutBigContent: Int,
+        remoteViewsListener: RemoteViewsListener,
+        channelId: String,
+        channelName: String,
+        smallIcon: Int,
+        sound: Uri?,
+        priority: Priority,
+        notificationId: Int = 0,
+        title: String?,
+        message: String?,
+        isOnGoing: Boolean = false
+    ) {
+        createNotificationChannel(channelId, channelName, priority)
+
+        val remoteViewsContent = RemoteViews(context.packageName, layoutContent)
+        val remoteViewsBigContent = RemoteViews(context.packageName, layoutBigContent)
+        remoteViewsListener.onCreateRemoteView(remoteViewsContent)
+        remoteViewsListener.onCreateRemoteView(remoteViewsBigContent)
+
+        val builder =
+            NotificationCompat.Builder(context, channelId).setPriority(Notification.PRIORITY_HIGH).setCustomBigContentView(remoteViewsBigContent)
+
+        setPriorityBelowOreo(builder, priority)
+
+
+        builder.setContentTitle(title)
+        builder.setContentText(message)
+        builder.setOngoing(isOnGoing)
+        builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+//        Set Small Icon : If smallIcon value is -1 then set default("ic_launcher_foreground") icon otherwise set it's value.
+        if (smallIcon != -1) {
+            builder.setSmallIcon(smallIcon)
+        } else {
+            builder.setSmallIcon(android.R.drawable.ic_notification_overlay)
+        }
+
+        if (sound != null) {
+            builder.setSound(sound)
+        }
+
+        val publicNotificationBuilder = builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+        builder.setPublicVersion(publicNotificationBuilder.build())
+
+        getNotificationManager().notify(notificationId, builder.build())
     }
 
     object NotificationID {
