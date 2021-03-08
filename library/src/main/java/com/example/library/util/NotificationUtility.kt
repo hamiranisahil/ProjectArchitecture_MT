@@ -48,6 +48,21 @@ class NotificationUtility(val context: Context) {
         return notification
     }
 
+    fun simpleNotificationService(channelId: String,
+                           channelName: String,
+                           title: String?, message: String?, icon: Int): Notification? {
+
+        createNotificationChannel(channelId, channelName, Priority.HIGH_PRIORITY)
+        val builder = NotificationCompat.Builder(context, "1")
+        builder.setContentTitle(title)
+        builder.setContentText(message)
+        builder.setSmallIcon(icon)
+        builder.priority = NotificationCompat.PRIORITY_HIGH
+        val notification = builder.build()
+        notification.flags = notification.flags or (Notification.FLAG_ONGOING_EVENT or Notification.FLAG_NO_CLEAR)
+        return notification
+    }
+
     fun bigTextNotification(
         channelId: String,
         channelName: String,
