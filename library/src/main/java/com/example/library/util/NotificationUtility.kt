@@ -35,7 +35,7 @@ class NotificationUtility(val context: Context) {
                            title: String?, message: String?, icon: Int): Notification? {
 
         createNotificationChannel(channelId, channelName, Priority.HIGH_PRIORITY)
-        val builder = NotificationCompat.Builder(context, "1")
+        val builder = NotificationCompat.Builder(context, channelId)
         builder.setContentTitle(title)
         builder.setContentText(message)
         builder.setSmallIcon(icon)
@@ -53,7 +53,7 @@ class NotificationUtility(val context: Context) {
                            title: String?, message: String?, icon: Int): Notification? {
 
         createNotificationChannel(channelId, channelName, Priority.HIGH_PRIORITY)
-        val builder = NotificationCompat.Builder(context, "1")
+        val builder = NotificationCompat.Builder(context, channelId)
         builder.setContentTitle(title)
         builder.setContentText(message)
         builder.setSmallIcon(icon)
@@ -74,7 +74,7 @@ class NotificationUtility(val context: Context) {
         requestCode: Int = 0
     ) {
         createNotificationChannel(channelId, channelName, Priority.HIGH_PRIORITY)
-        val builder = NotificationCompat.Builder(context, "1")
+        val builder = NotificationCompat.Builder(context, channelId)
         builder.setContentTitle(title)
         builder.setContentText(message)
         builder.setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
