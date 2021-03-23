@@ -264,7 +264,7 @@ class ApiCall {
 
                                     HandleStatusCode(
                                             context,
-                                            rootView!!,
+                                            rootView,
                                             bodyString,
                                             commonRes!!,
                                             requestCode,

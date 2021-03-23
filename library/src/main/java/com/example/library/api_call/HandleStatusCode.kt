@@ -11,7 +11,7 @@ import com.example.library.util.*
 
 class HandleStatusCode(
     val context: Context,
-    val rootView: View,
+    val rootView: View?,
     val bodyString: String,
     val commonRes: CommonRes,
     val requestCode: Int,
@@ -134,9 +134,9 @@ class HandleStatusCode(
     }
 
     private fun removeNoDataIfFound() {
-        val viewGroup = rootView.findViewWithTag("root_layout") as ViewGroup?
+        val viewGroup = rootView?.findViewWithTag("root_layout") as ViewGroup?
         if (viewGroup != null) {
-            val constraintLayout = rootView.findViewWithTag("ic_api_dialog") as ConstraintLayout?
+            val constraintLayout = rootView?.findViewWithTag("ic_api_dialog") as ConstraintLayout?
             if (constraintLayout != null)
                 viewGroup.removeView(constraintLayout)
         }
