@@ -13,17 +13,16 @@ import com.example.library.app_permissions.PermissionManagerUtility
 import java.io.*
 
 
-class ImagePickerUtility {
+class ImagePickerUtility(val context: Context) {
 
     companion object {
-        lateinit var sContext: Context
         lateinit var sSelectImageListener: SelectImageListener
     }
 
 
     private fun selectImage() {
         val items = arrayOf<CharSequence>("Take Photo", "Choose from Gallery", "Cancel")
-        val builder = AlertDialog.Builder(sContext)
+        val builder = AlertDialog.Builder(context)
         builder.setTitle("Add Photo!")
         builder.setItems(items) { dialog, item ->
             when {
@@ -37,7 +36,7 @@ class ImagePickerUtility {
 
     private fun cameraIntent() {
         PermissionManagerUtility().requestPermission(
-            sContext,
+            context,
             false,
             REQUEST_CODE_CAMERA,
             object : PermissionManagerUtility.PermissionListener {
@@ -47,7 +46,7 @@ class ImagePickerUtility {
                 ) {
                     if (deniedPermissions.size <= 0) {
                         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                        (sContext as Activity).startActivityForResult(intent, REQUEST_CAMERA)
+                        (context as Activity).startActivityForResult(intent, REQUEST_CAMERA)
                     }
                 }
             },
@@ -59,7 +58,7 @@ class ImagePickerUtility {
 
     private fun galleryIntent() {
         PermissionManagerUtility().requestPermission(
-            sContext,
+            context,
             false,
             REQUEST_CODE_CAMERA,
             object : PermissionManagerUtility.PermissionListener {
@@ -71,7 +70,7 @@ class ImagePickerUtility {
                         val intent = Intent()
                         intent.type = "image/*"
                         intent.action = Intent.ACTION_GET_CONTENT
-                        (sContext as Activity).startActivityForResult(
+                        (context as Activity).startActivityForResult(
                             Intent.createChooser(intent, "Select File"),
                             REQUEST_GALLERY
                         )
@@ -86,9 +85,8 @@ class ImagePickerUtility {
     @RequiresPermission(
         allOf = [Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE]
     )
-    fun show(context: Context, selectImageListener: SelectImageListener) {
+    fun show(selectImageListener: SelectImageListener) {
         try {
-            sContext = context
             sSelectImageListener = selectImageListener
             selectImage()
         } catch (e: SecurityException) {
@@ -99,9 +97,8 @@ class ImagePickerUtility {
     @RequiresPermission(
         allOf = [Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE]
     )
-    fun showCamera(context: Context, selectImageListener: SelectImageListener) {
+    fun showCamera(selectImageListener: SelectImageListener) {
         try {
-            sContext = context
             sSelectImageListener = selectImageListener
             cameraIntent()
         } catch (e: SecurityException) {
@@ -112,9 +109,8 @@ class ImagePickerUtility {
     @RequiresPermission(
         allOf = [Manifest.permission.READ_EXTERNAL_STORAGE]
     )
-    fun showGallery(context: Context, selectImageListener: SelectImageListener) {
+    fun showGallery(selectImageListener: SelectImageListener) {
         try {
-            sContext = context
             sSelectImageListener = selectImageListener
             galleryIntent()
         } catch (e: SecurityException) {
@@ -153,7 +149,7 @@ class ImagePickerUtility {
         val bytes = ByteArrayOutputStream()
         thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes)
         val destination =
-            File(sContext.cacheDir.path + "/", System.currentTimeMillis().toString() + ".jpg")
+            File(context.cacheDir.path + "/", System.currentTimeMillis().toString() + ".jpg")
         val fo: FileOutputStream
         try {
             destination.createNewFile()
