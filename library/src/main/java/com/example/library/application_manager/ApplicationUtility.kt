@@ -21,14 +21,18 @@ class ApplicationUtility {
         val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
             val runningProcesses = am.runningAppProcesses
-            for (processInfo in runningProcesses) {
-                if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
-                    for (activeProcess in processInfo.pkgList) {
-                        if (activeProcess == context.packageName) {
-                            isInBackground = false
+            if(runningProcesses!=null) {
+                for (processInfo in runningProcesses) {
+                    if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                        for (activeProcess in processInfo.pkgList) {
+                            if (activeProcess == context.packageName) {
+                                isInBackground = false
+                            }
                         }
                     }
                 }
+            } else {
+                isInBackground = false
             }
         } else {
             val taskInfo = am.getRunningTasks(1)
